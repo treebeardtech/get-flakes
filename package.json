@@ -47,8 +47,5 @@
 		"vscode-test": "^1.5.0"
 	},
 	"dependencies": {
-		"better-sqlite3": "^7.1.2",
-		"sqlite3": "^5.0.2",
-		"typeorm": "^0.2.31"
 	}
 }
