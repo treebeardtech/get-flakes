@@ -18,20 +18,23 @@ suite('Extension Test Suite', () => {
   // })
 
   test('DB', async () => {
-    const connection = await createConnection()
-    console.log('Inserting a new user into the database...')
-    throw Error('boom')
-    // const user = new User()
+    var sqlite3 = require('sqlite3').verbose()
+    var db = new sqlite3.Database('/Users/a/git/treebeardtech/deeptest/debug/src/.coverage')
 
-    // user.firstName = 'Timber'
+    db.serialize(function () {
+      db.run('CREATE TABLE lorem (info TEXT)')
 
-    // user.lastName = 'Saw'
-    // user.age = 25
-    // await connection.manager.save(user)
-    // console.log(`Saved a new user with id: ${user.id}`)
+      var stmt = db.prepare('INSERT INTO lorem VALUES (?)')
+      for (var i = 0; i < 10; i++) {
+        stmt.run('Ipsum ' + i)
+      }
+      stmt.finalize()
 
-    // console.log('Loading users from the database...')
-    // const users = await connection.manager.find(User)
-    // console.log('Loaded users: ', users)
+      db.each('SELECT rowid AS id, info FROM lorem', function (err, row) {
+        console.log(row.id + ': ' + row.info)
+      })
+    })
+
+    db.close()
   })
 })
