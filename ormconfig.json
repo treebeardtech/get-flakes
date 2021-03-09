@@ -1,0 +1,14 @@
+{
+    "type": "sqlite",
+    "database": "debug/src/.coverage",
+    "synchronize": false,
+    "logging": false,
+    "entities": ["out/entity/**/*.js"],
+    "migrations": ["src/migration/**/*.ts"],
+    "subscribers": ["src/subscriber/**/*.ts"],
+    "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
+  }
