@@ -19,7 +19,7 @@ class File(BaseModel):
 
 
 class Status(Enum):
-    SUCCESS = ("SUCCESS",)
+    SUCCESS = "SUCCESS"
     FAILURE = "FAILURE"
 
 
