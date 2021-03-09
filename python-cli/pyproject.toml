@@ -18,10 +18,12 @@ click = "^7.1.2"
 rich = "^9.13.0"
 pydantic = "^1.8.1"
 coverage = "^5.5"
+junitparser = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
 twine = "^3.3.0"
+pytest-cov = "^2.11.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
