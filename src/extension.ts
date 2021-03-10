@@ -24,10 +24,8 @@ export function activate(context: vscode.ExtensionContext): void {
       // Display a message box to the user
       vscode.window.showInformationMessage('Hello World from deeptest 42!')
       const openEditor = vscode.window.visibleTextEditors[0]
-      const cwd =
-        '/Users/a/git/treebeardtech/deeptest/python-cli/tests/resources/.deeptest'
-      const source =
-        '/Users/a/git/treebeardtech/deeptest/python-cli/tests/resources/src/test_main.py'
+      const cwd = `${vscode.workspace.workspaceFolders![0].uri.path}/.deeptest`
+      const source = openEditor.document.fileName
       const res = await exec(`cd ${cwd} && deeptest ${source}`)
       console.log(res)
       const data = JSON.parse(res.stdout)
