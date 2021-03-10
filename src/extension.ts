@@ -43,49 +43,50 @@ interface Line {
   failed: string[]
 }
 
-function getContent(line: Line): string {
-  let s = "-"
+function getContent(line: Line): [string, string] {
+  let s = '-'
+  let passed = ''
+  let failed = ''
   if (line.passed.length > 0) {
-    s+=`${line.passed.length} passed, `
+    s += `${line.passed.length} passed, `
+    passed = `Passed:\n\n${line.passed.join('\n\n')}`
   }
 
-  if (line.failed.length>0){
-    s+=`${line.failed.length} failed`
+  if (line.failed.length > 0) {
+    s += `${line.failed.length} failed`
+    failed = `Failed:\n\n${line.failed.join('\n\n')}`
   }
 
   if (s.length > 0) {
-    s+= '  in 0.83s'
+    s += '  in 0.83s'
   }
-  s=s.padEnd(45,"-")
+  s = s.padEnd(45, '-')
   console.log(s.length)
-  return s
+  return [s, [failed, passed].join('\n\n')]
 }
 
 function decorate(editor: vscode.TextEditor, data: any): void {
-  let sourceCode = editor.document.getText()
-
-  let decorationsArray: vscode.DecorationOptions[] = []
-
-  const sourceCodeArr = sourceCode.split('\n')
-
   for (const line of Object.keys(data.lines).map(Number)) {
     let range = new vscode.Range(
-      new vscode.Position(line -1, 0),
+      new vscode.Position(line - 1, 0),
       new vscode.Position(line, 0)
     )
-    let decoration = {range}
-
 
     const lineObj = data.lines[`${line}`] as Line
+    const [contentText, hoverMessage] = getContent(lineObj)
     const decorationType = vscode.window.createTextEditorDecorationType({
       before: {
         backgroundColor: 'rgba(0,0,0,0.1)',
-        color: lineObj.failed.length > 0 ? 'red': 'rgba(0,0,0,0.75)',
+        color: lineObj.failed.length > 0 ? 'red' : 'rgba(0,0,0,0.75)',
         height: '100%',
         margin: '0 26px -1px 0',
-        contentText: getContent(lineObj)
+        contentText
       }
     })
+    const decoration: vscode.DecorationOptions = {
+      hoverMessage,
+      range
+    }
     editor.setDecorations(decorationType, [decoration])
   }
 }
