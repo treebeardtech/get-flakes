@@ -27,3 +27,5 @@ yarn-error.log*
 
 /out
 .vscode-test
+
+src/debug.ts

@@ -1,5 +1,6 @@
 import json
 from enum import Enum
+from itertools import groupby
 from pathlib import Path
 from typing import Dict, List, cast
 
@@ -23,15 +24,16 @@ class Status(Enum):
     FAILURE = "FAILURE"
 
 
-def _get_line(context: List[str], status: Dict[str, Status]):
-    test_cases = [cc for cc in context if "|" in cc]
-    keys = [
-        tt.split("|")[0].replace(".py::", "::").replace("/", ".") for tt in test_cases
-    ]
+def _get_line(contexts: List[str], status: Dict[str, Status]):
+    def _get_status(test_case: str):
+        key = test_case.split("|")[0].replace(".py::", ".").replace("/", ".")
+        return status.get(key)
+
+    line_data = {k: list(g) for k, g in groupby(contexts, _get_status)}
 
     return Line(
-        passed=[kk for kk in keys if status.get(kk) == Status.SUCCESS],
-        failed=[kk for kk in keys if status.get(kk) == Status.FAILURE],
+        passed=line_data.get(Status.SUCCESS, []),
+        failed=line_data.get(Status.FAILURE, []),
     )
 
 
