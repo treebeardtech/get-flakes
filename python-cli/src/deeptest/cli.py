@@ -46,8 +46,12 @@ def _get_line(contexts: List[str], status: Dict[str, Status]):
     )
 
     return Line(
-        passed=[ctxs.ctx for ctxs in context_statuses if ctxs.status == Status.SUCCESS],
-        failed=[ctxs.ctx for ctxs in context_statuses if ctxs.status == Status.FAILURE],
+        passed=sorted(
+            [ctxs.ctx for ctxs in context_statuses if ctxs.status == Status.SUCCESS]
+        ),
+        failed=sorted(
+            [ctxs.ctx for ctxs in context_statuses if ctxs.status == Status.FAILURE]
+        ),
     )
 
 

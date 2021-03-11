@@ -19,7 +19,6 @@ RESOURCES = (Path(__file__) / ".." / "resources").resolve()
 
 @pytest.fixture
 def tested_dir():
-    check_output("rm -rf deeptest", shell=True)
     try:
         check_output(f"{sys.executable} -m pytest", cwd="tests/resources", shell=True)
     except CalledProcessError as err:
@@ -39,7 +38,7 @@ class TestCli:
 
         print(result.stdout)
         f = File(**json.loads(result.stdout))
-        snapshot.assert_match(f)
+        [snapshot.assert_match({line: f.lines[line]}) for line in sorted(f.lines)]
 
     def test_when_src_file_then_success(
         self, tested_dir: object, snapshot: PyTestSnapshotTest
@@ -52,9 +51,13 @@ class TestCli:
 
         print(result.stdout)
         f = File(**json.loads(result.stdout))
-        snapshot.assert_match(f)
+        [snapshot.assert_match({line: f.lines[line]}) for line in sorted(f.lines)]
 
-    def test_when_no_junit_then_error(self, testdir: pytest.Testdir):
+    def test_when_no_junit_then_error(
+        self,
+        tested_dir: object,
+        testdir: pytest.Testdir,
+    ):
         shutil.copyfile(RESOURCES / ".deeptest" / ".coverage", ".coverage")
         runner = CliRunner()
         source = RESOURCES / "src" / "lib.py"
