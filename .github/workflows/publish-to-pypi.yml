@@ -4,6 +4,9 @@ on:
       - published
 jobs:
   build-n-publish:
+    defaults:
+      run:
+        working-directory: python-cli
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
