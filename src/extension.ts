@@ -62,10 +62,10 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.window.showInformationMessage(
           'Showing per-line test results. Click again to hide.'
         )
-        // const res = await exec(cmd)
-        // console.log(res)
-        // const data = JSON.parse(res.stdout)
-        const data = JSON.parse(sample)
+        const res = await exec(cmd)
+        console.log(res)
+        const data = JSON.parse(res.stdout)
+        // const data = JSON.parse(sample)
         decorate(openEditor, data, decorationType)
       } catch (e: any) {
         console.log()

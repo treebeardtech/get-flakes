@@ -1,6 +1,5 @@
 import json
 from enum import Enum
-from itertools import groupby
 from pathlib import Path
 from typing import Dict, List, cast
 
@@ -24,16 +23,28 @@ class Status(Enum):
     FAILURE = "FAILURE"
 
 
-def _get_line(contexts: List[str], status: Dict[str, Status]):
-    def _get_status(test_case: str):
-        key = test_case.split("|")[0].replace(".py::", ".").replace("/", ".")
-        return status.get(key)
+class ContextStatus(BaseModel):
+    ctx: str
+    status: Status
 
-    line_data = {k: list(g) for k, g in groupby(contexts, _get_status)}
+
+def norm(context: str):
+    return (
+        context.split("|")[0].replace(".py::", ".").replace("/", ".").replace("::", ".")
+    )
+
+
+def _get_line(contexts: List[str], status: Dict[str, Status]):
+    if contexts == [""]:
+        return Line(passed=[], failed=[])
+
+    context_statuses = list(
+        map(lambda ctx: ContextStatus(ctx=ctx, status=status[ctx]), contexts)
+    )
 
     return Line(
-        passed=line_data.get(Status.SUCCESS, []),
-        failed=line_data.get(Status.FAILURE, []),
+        passed=[ctxs.ctx for ctxs in context_statuses if ctxs.status == Status.SUCCESS],
+        failed=[ctxs.ctx for ctxs in context_statuses if ctxs.status == Status.FAILURE],
     )
 
 
@@ -43,21 +54,28 @@ def run(source: str):
     """"""
     xml = JUnitXml.fromfile("junit.xml")
 
-    status: Dict[str, Status] = {}
+    status: Dict[str, Status] = {"": Status.SUCCESS}
     for suite in xml:
         if suite is None:
             continue
         # handle suites
         for testcase in suite:
-            key: str = f"{testcase.classname}::{testcase.name}"
+            key: str = f"{testcase.classname}.{testcase.name}"
             status[key] = (
                 Status.SUCCESS if len(testcase.result) == 0 else Status.FAILURE
             )
 
     cd = CoverageData()
     cd.read()
+    norm_contexts = {norm(ctx) for ctx in cd.measured_contexts()}
+    assert norm_contexts.difference(status.keys()) == set()
+
     cl = cast(Dict[int, List[str]], cd.contexts_by_lineno(Path(source).as_posix()))
-    cl
+    cl = {ln: list(map(norm, cl[ln])) for ln in cl.keys()}
+
     file = File(lines={i: _get_line(cl[i], status) for i in cl.keys()})
     output = json.dumps(file.dict())
     click.echo(output)
+
+
+# src/test_lib.py::test_divide2[3.0]|run == src.test_lib::test_divide2[3.0]
