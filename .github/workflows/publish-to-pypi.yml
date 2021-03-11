@@ -17,7 +17,7 @@ jobs:
       - run: poetry version 0.0.1
       - run: poetry build
       - run: pip install twine
-      - run: twine upload dist/* -ualex-treebeard-test -p${{ secrets.PYPI_PASSWORD }}
+      - run: twine upload dist/* -ualex-treebeard -p${{ secrets.PYPI_PASSWORD }}
       - uses: EndBug/add-and-commit@v7.0.0
         with:
           author_name: github-actions
