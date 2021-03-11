@@ -24,6 +24,9 @@ junitparser = "^2.0.0"
 pytest = "^6.2.2"
 twine = "^3.3.0"
 pytest-cov = "^2.11.1"
+snapshottest = "^0.6.0"
+pytest-xdist = "^2.2.1"
+pytest-randomly = "^3.5.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -33,5 +36,6 @@ build-backend = "poetry.core.masonry.api"
 addopts = [
   "--ignore=tests/resources",
   "--strict-markers",
-  "--capture=tee-sys"
+  "--capture=tee-sys",
+  "--forked"
 ]

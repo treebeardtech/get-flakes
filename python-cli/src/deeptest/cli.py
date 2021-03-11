@@ -115,6 +115,3 @@ def run(source: str):
     )
     output = json.dumps(file.dict())
     click.echo(output)
-
-
-# src/test_lib.py::test_divide2[3.0]|run == src.test_lib::test_divide2[3.0]

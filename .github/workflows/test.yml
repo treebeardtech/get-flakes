@@ -8,7 +8,7 @@ jobs:
   pytest:
     defaults:
       run:
-        working-directory: python
+        working-directory: python-cli
 
     timeout-minutes: 20
     strategy:
@@ -38,9 +38,9 @@ jobs:
       - run: poetry config virtualenvs.in-project true
       - run: poetry -V
       - run: poetry install
-      # - uses: pre-commit/action@v2.0.0
-      #   with:
-      #     extra_args: --verbose --all-files
+      - uses: pre-commit/action@v2.0.0
+        with:
+          extra_args: --verbose --all-files
 
       - run: pwd;ls -la;poetry run pytest
 
