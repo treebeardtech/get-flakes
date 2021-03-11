@@ -62,35 +62,6 @@ def test_when_local_dir_then_success():
     print(result.stdout)
     f = File(**json.loads(result.stdout))
     expected = """
-    {
-  "lines": {
-    "1": {
-      "failed": [],
-      "passed": []
-    },
-    "2": {
-      "failed": [
-        "src.test_lib.test_divide2[0]",
-        "src.test_lib.TestLib.test_divide2[0]"
-      ],
-      "passed": [
-        "src.test_lib.test_divide",
-        "src.test_lib.test_divide2[3.0]",
-        "src.test_lib.TestLib.test_divide2[3.0]"
-      ]
-    },
-    "4": {
-      "failed": [
-        "src.test_lib.test_divide2[0]",
-        "src.test_lib.TestLib.test_divide2[0]"
-      ],
-      "passed": [
-        "src.test_lib.test_divide",
-        "src.test_lib.test_divide2[3.0]",
-        "src.test_lib.TestLib.test_divide2[3.0]"
-      ]
-    }
-  }
-}
+    {"lines": {"3": {"passed": [], "failed": []}, "1": {"passed": ["ran on startup"], "failed": []}, "2": {"passed": ["src.test_lib.test_divide", "src.test_lib.test_divide2[3.0]", "src.test_lib.TestLib.test_divide2[3.0]"], "failed": ["src.test_lib.test_divide2[0]", "src.test_lib.TestLib.test_divide2[0]"]}, "5": {"passed": ["src.test_lib.test_divide", "src.test_lib.test_divide2[3.0]", "src.test_lib.TestLib.test_divide2[3.0]"], "failed": ["src.test_lib.test_divide2[0]", "src.test_lib.TestLib.test_divide2[0]"]}}}
 """
     assert f == File(**json.loads(expected))
