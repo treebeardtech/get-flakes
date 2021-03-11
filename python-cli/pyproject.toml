@@ -4,7 +4,6 @@ version = "0.0.0"
 license = "Apache-2.0"
 homepage = "https://github.com/treebeardtech/deeptest"
 description = "deeptest"
-long_description = "deeptest"
 authors = ["alex-treebeard <alex@treebeard.io>"]
 packages = [
   {include = "deeptest", from = "src"},
