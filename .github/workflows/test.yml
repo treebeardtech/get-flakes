@@ -19,18 +19,12 @@ jobs:
             python-version: "3.7"
           - os: ubuntu-latest
             python-version: "3.8"
-          - os: ubuntu-latest
-            python-version: "3.9"
-          - os: ubuntu-latest
-            python-version: "3.10"
           - os: macos-latest
             python-version: "3.7"
           - os: macos-latest
             python-version: "3.8"
           - os: macos-latest
             python-version: "3.9"
-          - os: macos-latest
-            python-version: "3.10"
 
     runs-on: ${{ matrix.cfg.os }}
     steps:
@@ -53,15 +47,11 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          # - os: ubuntu-latest
+          - os: ubuntu-latest
           - os: macos-latest
     runs-on: ${{ matrix.cfg.os }}
-    defaults:
-      run:
-        working-directory: ui
     steps:
       - uses: actions/checkout@v2
-      - run: npm install yarn
       - run: yarn install
       - run: yarn compile
       - run: yarn lint
