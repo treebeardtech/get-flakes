@@ -67,8 +67,15 @@ export function activate(context: vscode.ExtensionContext): void {
         const data = JSON.parse(res.stdout)
         // const data = JSON.parse(sample)
         decorate(openEditor, data, decorationType)
-      } catch (e: any) {
-        console.log()
+      } catch (ee: any) {
+        const data = JSON.parse(ee.stdout)
+        console.log(ee)
+        if (data.error) {
+          vscode.window.showErrorMessage(
+            data.error
+          )
+          return
+        }
         vscode.window.showErrorMessage(
           'Deeptest Exception ocurred. Please check the logs in the OUTPUT panel below.'
         )
