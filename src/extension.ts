@@ -6,10 +6,12 @@ import {promisify} from 'util'
 // import {sample} from './debug'
 
 const exec = promisify(child_process.exec)
-const WIDTH = 22
+const WIDTH = 7
 const BLACK = 'rgba(0,0,0,0.6)'
 const RED = 'rgba(255,0,0,0.6)'
+const GREEN = 'rgba(0,255,0,0.6)'
 const YELLOW = 'rgba(255,255,0,0.6)'
+const UNICODE_SPACE = ' '
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -69,6 +71,7 @@ export function activate(context: vscode.ExtensionContext): void {
         decorate(openEditor, data, decorationType)
       } catch (ee: any) {
         const data = JSON.parse(ee.stdout)
+        console.log("ERROR")
         console.log(ee)
         if (data.error) {
           vscode.window.showErrorMessage(data.error)
@@ -96,26 +99,23 @@ function getContent(line: Line | null, num: number): [string, string, string] {
   let color = BLACK
 
   if (line === null) {
-    return ['-'.padStart(WIDTH, '-'), '', 'rgba(0,0,0,0)']
-  }
-
-  if (line.passed.length > 0) {
-    textContent += `${line.passed.length} passed`
-    passed = `**${line.passed.length} Passed:**\n\n${line.passed.join('\n\n')}`
+    return [UNICODE_SPACE.padStart(WIDTH, UNICODE_SPACE), '', 'rgba(0,0,0,0)']
   }
 
   if (line.failed.length > 0) {
     color = RED
-    textContent += `-${line.failed.length} failed`
+    textContent += `${line.passed.length}/${line.failed.length + line.passed.length} ✖${UNICODE_SPACE}`
     failed = `**${line.failed.length} Failed:**\n\n${line.failed.join('\n\n')}`
-  } // ✖✔
-
-  if (textContent.length === 0) {
+  } else if (line.passed.length > 0) {
+      textContent += `${line.passed.length}/${line.passed.length} ✔${UNICODE_SPACE}`
+      color = GREEN
+      passed = `**${line.passed.length} Passed:**\n\n${line.passed.join('\n\n')}`
+  } else {
     color = YELLOW
-    textContent = 'No tests'
+    textContent = `0/0 ?${UNICODE_SPACE}`
   }
 
-  textContent = textContent.padStart(WIDTH, '-')
+  textContent = textContent.padStart(WIDTH, UNICODE_SPACE)
   const hover = `**Line ${num}**:\n\n ${[failed, passed].join('\n\n')}`
 
   return [textContent, hover, color]
