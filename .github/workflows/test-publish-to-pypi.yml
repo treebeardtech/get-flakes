@@ -9,9 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - run: pip install poetry
-      - name: Set poetry version to dev
-        run: |
-          build_version="$(poetry version -s).dev$(date +%s)" poetry version $build_version
+      - run: build_version="$(poetry version -s).dev$(date +%s)" poetry version $build_version
       - run: poetry build
       - run: pip install "dist/deeptest-$(poetry version -s).tar.gz"
       - run: pip install twine
