@@ -14,5 +14,6 @@ jobs:
           build_version="$(poetry version -s).dev$(date +%s)" poetry version $build_version
       - run: poetry build
       - run: pip install "dist/deeptest-$(poetry version -s).tar.gz"
+      - run: pip install twine
       - run: twine upload --repository testpypi dist/* -ualex-treebeard-test -p${{ secrets.TEST_PYPI_PASSWORD }}
 
