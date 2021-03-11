@@ -9,8 +9,9 @@ jobs:
         working-directory: python-cli
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+      - run: pwd; ls -la
       - run: pip install poetry
       - run: poetry version $GITHUB_REF
       - run: poetry build
