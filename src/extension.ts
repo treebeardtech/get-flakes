@@ -3,7 +3,7 @@
 import * as vscode from 'vscode'
 import * as child_process from 'child_process'
 import {promisify} from 'util'
-import {sample} from './debug'
+// import {sample} from './debug'
 
 const exec = promisify(child_process.exec)
 const WIDTH = 22
@@ -71,9 +71,7 @@ export function activate(context: vscode.ExtensionContext): void {
         const data = JSON.parse(ee.stdout)
         console.log(ee)
         if (data.error) {
-          vscode.window.showErrorMessage(
-            data.error
-          )
+          vscode.window.showErrorMessage(data.error)
           return
         }
         vscode.window.showErrorMessage(
