@@ -66,7 +66,7 @@ class TestCli:
         result = runner.invoke(cli.run, source.as_posix(), catch_exceptions=False)
         assert "error" in json.loads(result.stdout)
 
-    def test_when_no_cov_then_error(self, testdir: pytest.Testdir):
+    def test_when_no_cov_then_error(self, tested_dir: object, testdir: pytest.Testdir):
         shutil.copyfile(RESOURCES / ".deeptest" / "junit.xml", "junit.xml")
         runner = CliRunner()
         source = RESOURCES / "src" / "lib.py"
