@@ -108,7 +108,7 @@ function getContent(line: Line | null, num: number): [string, string, string] {
     color = RED
     textContent += `-${line.failed.length} failed`
     failed = `**${line.failed.length} Failed:**\n\n${line.failed.join('\n\n')}`
-  }
+  } // ✖✓
 
   if (textContent.length === 0) {
     color = YELLOW
