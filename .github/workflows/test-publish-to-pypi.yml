@@ -11,14 +11,8 @@ jobs:
       - run: pip install poetry
       - name: Set poetry version to dev
         run: |
-          build_version="$(poetry version -s).dev$(date +%s)"
-          poetry version $build_version
+          build_version="$(poetry version -s).dev$(date +%s)" poetry version $build_version
       - run: poetry build
       - run: pip install "dist/deeptest-$(poetry version -s).tar.gz"
-      - name: Publish distribution to Test PyPI
-        uses: pypa/gh-action-pypi-publish@v1.4.2
-        with:
-          password: ${{ secrets.TEST_PYPI_PASSWORD }}
-          repository_url: https://test.pypi.org/legacy/
-          packages_dir: python-cli/dist
+      - run: twine upload --repository testpypi dist/* -ualex-treebeard-test -p${{ secrets.TEST_PYPI_PASSWORD }}
 
