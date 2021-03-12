@@ -6,11 +6,11 @@ import {promisify} from 'util'
 // import {sample} from './debug'
 
 const exec = promisify(child_process.exec)
-const WIDTH = 7
+const WIDTH = 13
 const BLACK = 'rgba(0,0,0,0.6)'
-const RED = 'rgba(255,0,0,0.6)'
-const GREEN = 'rgba(0,255,0,0.6)'
-const YELLOW = 'rgba(255,255,0,0.6)'
+const RED = '#DF0E25'
+const GREEN = '#00CE1C'
+const YELLOW = '#939B00'
 const UNICODE_SPACE = ' '
 const configKey = 'visible'
 
