@@ -60,7 +60,7 @@ jobs:
       - run: yarn install
       - run: yarn lint
       - run: yarn test
-      - run: yarn add --global vsce
+      - run: npm i --global vsce
       - run: vsce package
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
