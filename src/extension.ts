@@ -6,11 +6,12 @@ import {promisify} from 'util'
 // import {sample} from './debug'
 
 const exec = promisify(child_process.exec)
-const WIDTH = 7
+const WIDTH = 10
 const BLACK = 'rgba(0,0,0,0.6)'
-const RED = 'rgba(255,0,0,0.6)'
-const GREEN = 'rgba(0,255,0,0.6)'
-const YELLOW = 'rgba(255,255,0,0.6)'
+const RED = '#DF0E25'
+const GREEN = '#00CE1C'
+const YELLOW = '#939B00'
+const BLUE = '#0057DB'
 const UNICODE_SPACE = ' '
 
 // this method is called when your extension is activated
@@ -70,12 +71,17 @@ export function activate(context: vscode.ExtensionContext): void {
         // const data = JSON.parse(sample)
         decorate(openEditor, data, decorationType)
       } catch (ee: any) {
-        const data = JSON.parse(ee.stdout)
         console.log("ERROR")
-        console.log(ee)
-        if (data.error) {
-          vscode.window.showErrorMessage(data.error)
-          return
+        if (ee.stderr) {
+          console.log(ee.stderr)
+        } else {
+          const data = JSON.parse(ee.stdout)
+          if (data.error) {
+            vscode.window.showErrorMessage(data.error)
+            return
+          } else {
+            console.log(ee)
+          }
         }
         vscode.window.showErrorMessage(
           'Deeptest Exception ocurred. Please check the logs in the OUTPUT panel below.'
@@ -102,17 +108,21 @@ function getContent(line: Line | null, num: number): [string, string, string] {
     return [UNICODE_SPACE.padStart(WIDTH, UNICODE_SPACE), '', 'rgba(0,0,0,0)']
   }
 
-  if (line.failed.length > 0) {
+  if (line.passed[0] === "ran on startup") {
+    textContent += "•"
+    color = GREEN
+    passed = "ran on startup"
+  } else if (line.failed.length > 0) {
     color = RED
-    textContent += `${line.passed.length}/${line.failed.length + line.passed.length} ✖${UNICODE_SPACE}`
+    textContent += `${line.passed.length} ✔, ${line.failed.length} ✖`
     failed = `**${line.failed.length} Failed:**\n\n${line.failed.join('\n\n')}`
   } else if (line.passed.length > 0) {
-      textContent += `${line.passed.length}/${line.passed.length} ✔${UNICODE_SPACE}`
+      textContent += `${line.passed.length} ✔, ${line.failed.length} ✖`
       color = GREEN
       passed = `**${line.passed.length} Passed:**\n\n${line.passed.join('\n\n')}`
   } else {
     color = YELLOW
-    textContent = `0/0 ?${UNICODE_SPACE}`
+    textContent = `0 ✔, 0 ✖`
   }
 
   textContent = textContent.padStart(WIDTH, UNICODE_SPACE)
@@ -141,7 +151,7 @@ function decorate(
       range,
       renderOptions: {
         before: {
-          backgroundColor: 'rgba(0,0,0,0.2)',
+          backgroundColor: 'rgba(0,0,0,0)',
           color,
           height: '100%',
           margin: '0 26px -1px 0',
