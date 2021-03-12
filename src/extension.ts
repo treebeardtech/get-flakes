@@ -6,12 +6,11 @@ import {promisify} from 'util'
 // import {sample} from './debug'
 
 const exec = promisify(child_process.exec)
-const WIDTH = 10
+const WIDTH = 13
 const BLACK = 'rgba(0,0,0,0.6)'
 const RED = '#DF0E25'
 const GREEN = '#00CE1C'
 const YELLOW = '#939B00'
-const BLUE = '#0057DB'
 const UNICODE_SPACE = ' '
 
 // this method is called when your extension is activated
