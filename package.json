@@ -24,7 +24,7 @@
 			"properties": {
 				"deeptest.cliLocation": {
 					"type": "string",
-					"default": "deeptest",
+				"default": "deeptest",
 					"markdownDescription": "The location of your deeptest cli. Run `which deeptest` in the shell to debug.",
 					"scope": "window"
 				}
