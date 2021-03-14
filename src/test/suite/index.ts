@@ -1,7 +1,8 @@
 import * as path from 'path'
 import Mocha from 'mocha'
 import glob from 'glob'
-
+const DdxXd = 5
+console.log(DdxXd)
 export async function run(): Promise<void> {
   // Create the mocha test
   const mocha = new Mocha({
@@ -15,11 +16,8 @@ export async function run(): Promise<void> {
     glob('**/**.test.js', {cwd: testsRoot}, (err, files) => {
       if (err) {
         return e(err)
-      }
-
-      // Add files to the test suite
+      } // Add files to the test suite
       files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)))
-
       try {
         // Run the mocha test
         mocha.run(failures => {
