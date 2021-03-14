@@ -4,6 +4,9 @@ repos:
       rev: v3.3.0
       hooks:
           - id: trailing-whitespace
+          - id: pretty-format-json
+            args:
+                - --autofix
     - repo: https://github.com/adrienverge/yamllint.git
       rev: v1.21.0  # or higher tag
       hooks:
