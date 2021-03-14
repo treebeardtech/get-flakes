@@ -1,8 +1,7 @@
 import * as path from 'path'
 import Mocha from 'mocha'
 import glob from 'glob'
-const DdxXd = 5
-console.log(DdxXd)
+
 export async function run(): Promise<void> {
   // Create the mocha test
   const mocha = new Mocha({
