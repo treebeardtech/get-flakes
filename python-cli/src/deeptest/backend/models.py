@@ -1,18 +1,10 @@
 from typing import Any
 
-from sqlalchemy import BOOLEAN, TIMESTAMP, Column, Text, create_engine
+from sqlalchemy import BOOLEAN, TIMESTAMP, Column, Text
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.sqltypes import FLOAT, TIMESTAMP, Integer
 
 Base: Any = declarative_base()
-
-engine = create_engine(
-    # local dev credentials
-    "cockroachdb://panoptes:panoptes@localhost:26257/panoptes?sslmode=require",
-    echo=False,  # Log SQL queries to stdout
-)
-Session = sessionmaker(engine)
 
 
 class TestResult(Base):
@@ -27,7 +19,3 @@ class TestResult(Base):
     repo = Column(Text, nullable=False)
     branch = Column(Text, nullable=False)
     sha = Column(Text, nullable=False)
-
-
-if __name__ == "__main__":
-    Base.metadata.create_all(engine)

@@ -6,6 +6,8 @@ from typing import List, Optional
 from deeptest.backend.models import TestResult
 from junitparser import JUnitXml
 from junitparser.junitparser import TestCase
+from sqlalchemy.engine import create_engine
+from sqlalchemy.orm.session import sessionmaker
 
 
 @dataclass
@@ -19,6 +21,27 @@ class Failure:
 @dataclass
 class FlakyTest:
     failures: List[Failure]
+
+
+DATABASE_URL = "sqlite://"
+# DATABASE_URL = cockroachdb://panoptes:panoptes@localhost:26257/panoptes?sslmode=require",
+
+engine = create_engine(
+    # local dev credentials
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    echo=False,  # Log SQL queries to stdout
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def get_db():
+
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 class Db:

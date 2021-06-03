@@ -4,16 +4,13 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import uvicorn
-from deeptest.db import Db
-from fastapi import FastAPI, File
+from deeptest.db import Db, get_db
+from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.datastructures import UploadFile
 
 logger = getLogger("uvicorn")
 
-from fastapi import UploadFile
-
 app = FastAPI()
-db = Db()
 
 
 def save_upload_file_tmp(upload_file: UploadFile) -> Path:
@@ -28,7 +25,9 @@ def save_upload_file_tmp(upload_file: UploadFile) -> Path:
 
 
 @app.post("/upload/")
-async def create_upload_file(file: UploadFile = File(...), submit: bool = False):
+async def create_upload_file(
+    file: UploadFile = File(...), submit: bool = False, db: Db = Depends(get_db)
+):
     path = save_upload_file_tmp(file)
     logger.info(f"wrote {path}")
     branch = ""
