@@ -1,6 +1,14 @@
+from dataclasses import dataclass
+
 import click
 import requests
 from click.core import Context
+
+
+@dataclass
+class Git:
+    repo: str
+    sha: str
 
 
 @click.group()
@@ -14,6 +22,7 @@ def run(ctx, debug: bool, server: str):
 
     ctx.obj["DEBUG"] = debug
     ctx.obj["SERVER"] = server
+    ctx.obj["GIT"] = Git(repo="gh/local/local", sha="987987987")
 
 
 @run.command()
@@ -22,7 +31,8 @@ def run(ctx, debug: bool, server: str):
 def upload(ctx: Context, junit_path: str):
     with open(junit_path, "rb") as fp:
         files = {"file": fp.read()}
-        r = requests.post(f"{ctx.obj['SERVER']}/upload/", files=files)
+        url = f"{ctx.obj['SERVER']}/repo/{ctx.obj['GIT'].repo}/{ctx.obj['GIT'].sha}/upload/"
+        r = requests.post(url, files=files)
         assert r.status_code == 200
 
 
@@ -30,5 +40,7 @@ def upload(ctx: Context, junit_path: str):
 @click.pass_context
 @click.argument("days", default=7)
 def report(ctx: Context, days: int):
-    r = requests.get(f"{ctx.obj['SERVER']}/report/", params={"days": days})
+    url = f"{ctx.obj['SERVER']}/repo/{ctx.obj['GIT'].repo}/report"
+    r = requests.get(url, params={"days": days})
+
     assert r.status_code == 200

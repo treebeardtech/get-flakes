@@ -1,4 +1,5 @@
 import shutil
+from datetime import datetime, timedelta
 from logging import getLogger
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -27,20 +28,19 @@ def save_upload_file_tmp(upload_file: UploadFile) -> Path:
     return tmp_path
 
 
-@app.post("/upload/")
+@app.post("/repo/{provider}/{owner}/{repo}/{sha}/upload/")
 async def create_upload_file(
-    file: UploadFile = File(...), submit: bool = False, db: Db = Depends(get_db)
+    provider: str,
+    owner: str,
+    repo: str,
+    sha: str,
+    file: UploadFile = File(...),
+    db: Db = Depends(get_db),
 ):
     path = save_upload_file_tmp(file)
     logger.info(f"wrote {path}")
     branch = ""
-    repo = ""
-    sha = ""
-
-    flaky_tests = db.check_store(path, branch, repo, sha)
-
-    if submit:
-        db.store(path, branch, repo, sha)
+    flaky_tests = db.store(path, branch, f"{provider}/{owner}/{repo}", sha)
 
     return {"flaky_tests": flaky_tests}
 
@@ -50,8 +50,12 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/report")
-async def report(days: int = 7):
+@app.get("/repo/{provider}/{owner}/{repo}/report")
+async def report(
+    provider: str, owner: str, repo: str, days: int = 7, db: Db = Depends(get_db)
+):
+    start = datetime.now() - timedelta(days=days)
+    _ = db.get_flakes(f"{provider}/{owner}/{repo}", start)
     return {"message": "Hello World"}
 
 
