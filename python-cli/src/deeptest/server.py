@@ -4,13 +4,16 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import uvicorn
-from deeptest.db import Db, get_db
+from deeptest.backend.models import Base
+from deeptest.db import Db, engine, get_db
 from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.datastructures import UploadFile
 
 logger = getLogger("uvicorn")
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 
 def save_upload_file_tmp(upload_file: UploadFile) -> Path:
