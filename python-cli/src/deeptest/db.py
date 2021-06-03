@@ -19,8 +19,19 @@ class Failure:
 
 
 @dataclass
-class FlakyTest:
+class FailingTest:
     failures: List[Failure]
+
+
+@dataclass
+class TestRun:
+    sha: str
+    date: datetime
+
+
+@dataclass
+class FlakyTest:
+    runs: List[TestRun]
 
 
 DATABASE_URL = "sqlite://"
@@ -69,9 +80,12 @@ class Db:
                 self.session.add(test_result)
         self.session.commit()
 
+    def get_flakes(self, repo: str, since_date: datetime) -> List[FlakyTest]:
+        return []
+
     def check_store(
         self, junit_xml_path: Path, branch: str, repo: str, sha: str
-    ) -> List[FlakyTest]:
+    ) -> List[FailingTest]:
         xml = JUnitXml.fromfile(junit_xml_path)
 
         failures: List[TestCase] = []
@@ -106,6 +120,6 @@ class Db:
                     )
                     for result in previous_failures
                 ]
-                flakes.append(FlakyTest(failures=failures))
+                flakes.append(FailingTest(failures=failures))
 
         return flakes
