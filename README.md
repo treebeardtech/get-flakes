@@ -1,42 +1,84 @@
-# Cluster Setup
+# get-flakes 🍦
 
-## Setup
+**A cloud-native test flake detector**
 
-EKS
+---
 
+get-flakes helps you keep track of unreliable tests and the impact they have on your velocity.
+
+This is done by ingesting your junit.xml test reports into a database and identifying  if restarting the tests 'fixed' the problem.
+
+## Quickstart
+
+Ensure you have Python 3 setup before you start
+
+Install the Python package
 ```sh
-eksctl create cluster \
-  --name ec2-cluster \
-  --region us-west-2
+pip install get-flakes
 ```
 
-Minikube
+Start the server locally
 
 ```sh
-minikube start --cpus 4 --memory 7962
+➜ export GF_API_KEY='some-key'
+
+➜ gf serve --api-key=a_key
+running on http://localhost:8080
 ```
 
-Install Istio
+Upload a failing test report
 
 ```sh
-## from https://istio.io/latest/docs/setup/install/operator/
-istioctl operator init
-kubectl label namespace default istio-injection=enabled
-kubectl apply -f istio.yaml
+➜ export GF_API_KEY='some-key'
+➜ export GF_REPO='user/repo'
+➜ export GF_SERVER='http://localhost:8080'
+➜ export GF_SHA='89787987987'
+
+➜ gf upload report_fail.xml
+done
 ```
 
-Install sample app
+There are no flake reports yet
 
-```sh
-## from https://istio.io/latest/docs/setup/getting-started/#bookinfo
-kubectl apply -f bookinfo/platform/kube/bookinfo.yaml
-kubectl apply -f addons # prometheus, jaeger, etc.
+```log
+gf report --days=9
+
+✓ 0 testcases logged both passing and failing statuses on a single commit.
 ```
 
-Install kube cost
+Upload a passing report (with the same SHA)
+
+```log
+➜ gf upload report_pass.xml
+done
+```
+
+```log
+➜ get-flakes --days=9
+
+2 testcases logged both passing and failing statuses for a single commit
+
+ * tests.test_flakiness_simulator:test_eval[23]
+   * 2021-06-03 987987987
+ * tests.test_flakiness_simulator:test_eval[88]
+   * 2021-06-03 987987987
+```
+
+These markdown reports fit nicely into Slack, pull requests, and issues
+## Deployment
+
+Deploy on a VM
+```sh
+get-flakes serve --deploy
+```
+
+Deploy with Docker
 
 ```sh
-helm repo add kubecost https://kubecost.github.io/cost-analyzer/
-kubectl create namespace kubecost
-helm install kubecost/cost-analyzer --namespace kubecost --generate-name kubecost --set kubecostToken="some-token"
+docker run get-flakes serve --deploy
+```
+
+Deploy on Kubernetes
+```sh
+kubectl apply -f ...
 ```
