@@ -29,3 +29,14 @@ def test_check(session):
 
     flakes = db.check_store(test_path, "feature/test3", "test-repo", "A_SHA")
     assert len(flakes) == 2
+
+
+def test_get_flakes(session):
+    db = Db(session)
+    test_path = Path(os.path.join(os.path.dirname(__file__), "report.xml"))
+    db.store(test_path, "feature/test", "test-repo", "sha1")
+    test_path = Path(os.path.join(os.path.dirname(__file__), "report_passed.xml"))
+    db.store(test_path, "feature/test", "test-repo", "sha1")
+
+    flakes = db.get_flakes("test-repo")
+    assert flakes == []
