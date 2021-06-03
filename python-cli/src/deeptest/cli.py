@@ -42,5 +42,5 @@ def upload(ctx: Context, junit_path: str):
 def report(ctx: Context, days: int):
     url = f"{ctx.obj['SERVER']}/repo/{ctx.obj['GIT'].repo}/report"
     r = requests.get(url, params={"days": days})
-
     assert r.status_code == 200
+    click.echo(r.text)

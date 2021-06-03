@@ -52,16 +52,15 @@ async def root():
 
 
 def make_report(days: int, flakes: List[FlakyTest]):
-    report = f"""
-    # Flaky Tests from the last {days} days
+    report = f"""# Flaky Tests from the last {days} days
 
 {len(flakes)} testcases logged both passing and failing statuses on a single commit.
 """
 
     for ft in flakes:
-        report += f" * {ft.class_name}:{ft.test_name}"
+        report += f" * {ft.class_name}:{ft.test_name}\n"
         for ff in ft.runs:
-            report += f"    * {ff.date} {ff.sha}"
+            report += f"    * {ff.date} {ff.sha}\n"
 
     return report
 
