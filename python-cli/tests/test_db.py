@@ -1,9 +1,10 @@
+import datetime
 import os.path
 from pathlib import Path
 
 import pytest
 from deeptest.backend.models import Base
-from deeptest.db import Db
+from deeptest.db import Db, FlakyTest, FlakyTestRun
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm.session import sessionmaker
 
@@ -39,4 +40,21 @@ def test_get_flakes(session):
     db.store(test_path, "feature/test", "test-repo", "sha1")
 
     flakes = db.get_flakes("test-repo")
-    assert flakes == []
+    assert flakes[0] == FlakyTest(
+        class_name="tests.test_flakiness_simulator",
+        test_name="test_eval[23]",
+        runs=[
+            FlakyTestRun(
+                sha="sha1", date=datetime.datetime(2021, 6, 3, 12, 35, 2, 780482)
+            )
+        ],
+    )
+    assert flakes[1] == FlakyTest(
+        class_name="tests.test_flakiness_simulator",
+        test_name="test_eval[88]",
+        runs=[
+            FlakyTestRun(
+                sha="sha1", date=datetime.datetime(2021, 6, 3, 12, 35, 2, 780482)
+            )
+        ],
+    )
