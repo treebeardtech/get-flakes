@@ -28,4 +28,4 @@ def test_check(session):
     db.store(test_path, "feature/test2", "test-repo", "A_SHA")
 
     flakes = db.check_store(test_path, "feature/test3", "test-repo", "A_SHA")
-    assert len(flakes) > 0
+    assert len(flakes) == 2
