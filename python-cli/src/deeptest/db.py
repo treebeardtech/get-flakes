@@ -114,7 +114,12 @@ class Db:
             flakes_by_test[(row[0], row[1])].append(FlakyTestRun(row[3], row[4]))
 
         return [
-            FlakyTest(key[0], key[1], value) for key, value in flakes_by_test.items()
+            FlakyTest(
+                class_name=key[0],
+                test_name=key[1],
+                runs=sorted(value, key=lambda r: r.date, reverse=True),
+            )
+            for key, value in flakes_by_test.items()
         ]
 
     def check_store(
