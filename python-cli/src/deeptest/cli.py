@@ -78,7 +78,6 @@ def get_file_cov(src: str, coverage: Coverage, coverage_data: CoverageData):
 @click.argument("source", required=False)
 @click.option("--data-dir", default=None)
 def run(source: Optional[str], data_dir: Optional[str]):
-    """"""
     if data_dir:
         Path(data_dir).mkdir(exist_ok=True, parents=True)
         os.chdir(data_dir)
