@@ -58,3 +58,13 @@ def test_get_flakes(session):
             )
         ],
     )
+
+def test_get_flakes_with_date(session):
+    db = Db(session)
+    test_path = Path(os.path.join(os.path.dirname(__file__), "report.xml"))
+    db.store(test_path, "feature/test", "test-repo", "sha1")
+    test_path = Path(os.path.join(os.path.dirname(__file__), "report_passed.xml"))
+    db.store(test_path, "feature/test", "test-repo", "sha1")
+
+    flakes = db.get_flakes("test-repo", datetime.datetime.now())
+    assert flakes == []
