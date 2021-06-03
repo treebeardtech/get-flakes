@@ -102,6 +102,7 @@ class Db:
                 TestResult.repo,
                 TestResult.sha,
             )
+            # This implies the same sha passed and failed for the same test
             .having(func.count(distinct(TestResult.passed)) == 2)
         )
 

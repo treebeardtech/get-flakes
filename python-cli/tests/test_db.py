@@ -59,6 +59,7 @@ def test_get_flakes(session):
         ],
     )
 
+
 def test_get_flakes_with_date(session):
     db = Db(session)
     test_path = Path(os.path.join(os.path.dirname(__file__), "report.xml"))
