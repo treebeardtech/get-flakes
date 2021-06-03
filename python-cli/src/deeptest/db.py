@@ -31,6 +31,8 @@ class TestRun:
 
 @dataclass
 class FlakyTest:
+    class_name: str
+    test_name: str
     runs: List[TestRun]
 
 
@@ -80,7 +82,9 @@ class Db:
                 self.session.add(test_result)
         self.session.commit()
 
-    def get_flakes(self, repo: str, since_date: datetime) -> List[FlakyTest]:
+    def get_flakes(
+        self, repo: str, since_date: Optional[datetime] = None
+    ) -> List[FlakyTest]:
         return []
 
     def check_store(
