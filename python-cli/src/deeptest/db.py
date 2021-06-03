@@ -91,7 +91,6 @@ class Db:
             self.session.query(
                 TestResult.class_name,
                 TestResult.test_name,
-                TestResult.repo,
                 TestResult.sha,
                 func.min(TestResult.timestamp),
             )
@@ -99,7 +98,6 @@ class Db:
             .group_by(
                 TestResult.class_name,
                 TestResult.test_name,
-                TestResult.repo,
                 TestResult.sha,
             )
             # This implies the same sha passed and failed for the same test
@@ -111,7 +109,7 @@ class Db:
 
         flakes_by_test = defaultdict(list)
         for row in query:
-            flakes_by_test[(row[0], row[1])].append(FlakyTestRun(row[3], row[4]))
+            flakes_by_test[(row[0], row[1])].append(FlakyTestRun(row[2], row[3]))
 
         return [
             FlakyTest(
