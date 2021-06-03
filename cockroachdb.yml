@@ -1,0 +1,46 @@
+---
+# Copyright 2021 The Cockroach Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# This depends on the cockroach kubernetes operator.
+# See https://www.cockroachlabs.com/docs/stable/orchestrate-a-local-cluster-with-kubernetes.html
+# for installation instructions
+
+apiVersion: crdb.cockroachlabs.com/v1alpha1
+kind: CrdbCluster
+metadata:
+    name: cockroachdb
+spec:
+    dataStore:
+        pvc:
+            spec:
+                accessModes:
+                    - ReadWriteOnce
+                resources:
+                    requests:
+                        storage: 20Gi
+                volumeMode: Filesystem
+    resources:
+        requests:
+            cpu: '1'
+            memory: 2Gi
+        limits:
+            cpu: '1'
+            memory: 2Gi
+    tlsEnabled: true
+# cockroachDBVersion: v20.2.8
+    image:
+        name: cockroachdb/cockroach:v21.1.1
+    nodes: 3
