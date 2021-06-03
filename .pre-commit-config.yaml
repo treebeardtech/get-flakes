@@ -5,18 +5,18 @@ repos:
       hooks:
           - id: trailing-whitespace
           - id: check-toml
-          - id: pretty-format-json
-            args:
-                - --autofix
-    - repo: https://github.com/adrienverge/yamllint.git
-      rev: v1.21.0
-      hooks:
-          - id: yamllint
-            args:
-                - --format
-                - parsable
-                - --strict
-                - '-d {extends: relaxed, rules: {line-length: {max: 150}}}'
+          # - id: pretty-format-json
+          #   args:
+          #       - --autofix
+    # - repo: https://github.com/adrienverge/yamllint.git
+    #   rev: v1.21.0
+    #   hooks:
+    #       - id: yamllint
+    #         args:
+    #             - --format
+    #             - parsable
+    #             - --strict
+    #             - '-d {extends: relaxed, rules: {line-length: {max: 150}}}'
 
     - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
       rev: 0.0.11

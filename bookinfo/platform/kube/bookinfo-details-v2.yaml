@@ -1,3 +1,4 @@
+---
 # Copyright Istio Authors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,31 +19,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: details-v2
-  labels:
-    app: details
-    version: v2
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: details
-      version: v2
-  template:
-    metadata:
-      labels:
+    name: details-v2
+    labels:
         app: details
         version: v2
-    spec:
-      containers:
-      - name: details
-        image: docker.io/istio/examples-bookinfo-details-v2:1.16.2
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 9080
-        env:
-        - name: DO_NOT_ENCRYPT
-          value: "true"
-        securityContext:
-          runAsUser: 1000
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: details
+            version: v2
+    template:
+        metadata:
+            labels:
+                app: details
+                version: v2
+        spec:
+            containers:
+                - name: details
+                  image: docker.io/istio/examples-bookinfo-details-v2:1.16.2
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 9080
+                  env:
+                      - name: DO_NOT_ENCRYPT
+                        value: 'true'
+                  securityContext:
+                      runAsUser: 1000
 ---
+...

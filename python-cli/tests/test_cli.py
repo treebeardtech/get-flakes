@@ -3,11 +3,10 @@ import os
 
 import pytest
 from click.testing import CliRunner
+from deeptest import cli
 from deeptest.cli import File
 from snapshottest.pytest import PyTestSnapshotTest
 from tests.util import RESOURCES
-
-from deeptest import cli
 
 pytest_plugins = "pytester"
 import shutil

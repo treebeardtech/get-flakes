@@ -1,12 +1,13 @@
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: details
+    name: details
 spec:
-  hosts:
-  - details
-  http:
-  - route:
-    - destination:
-        host: details
-        subset: v2
+    hosts:
+        - details
+    http:
+        - route:
+              - destination:
+                    host: details
+                    subset: v2
