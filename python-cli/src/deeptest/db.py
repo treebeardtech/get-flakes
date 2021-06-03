@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -6,6 +7,7 @@ from typing import List, Optional
 from deeptest.backend.models import TestResult
 from junitparser import JUnitXml
 from junitparser.junitparser import TestCase
+from sqlalchemy import distinct, func
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm.session import sessionmaker
 
@@ -24,7 +26,7 @@ class FailingTest:
 
 
 @dataclass
-class TestRun:
+class FlakyTestRun:
     sha: str
     date: datetime
 
@@ -33,7 +35,7 @@ class TestRun:
 class FlakyTest:
     class_name: str
     test_name: str
-    runs: List[TestRun]
+    runs: List[FlakyTestRun]
 
 
 DATABASE_URL = "sqlite://"
@@ -85,7 +87,38 @@ class Db:
     def get_flakes(
         self, repo: str, since_date: Optional[datetime] = None
     ) -> List[FlakyTest]:
-        return []
+        query = (
+            self.session.query(
+                TestResult.class_name,
+                TestResult.test_name,
+                TestResult.sha,
+                func.min(TestResult.timestamp),
+            )
+            .filter(TestResult.repo == repo)
+            .group_by(
+                TestResult.class_name,
+                TestResult.test_name,
+                TestResult.sha,
+            )
+            # This implies the same sha passed and failed for the same test
+            .having(func.count(distinct(TestResult.passed)) == 2)
+        )
+
+        if since_date:
+            query = query.filter(TestResult.timestamp >= since_date)
+
+        flakes_by_test = defaultdict(list)
+        for row in query:
+            flakes_by_test[(row[0], row[1])].append(FlakyTestRun(row[2], row[3]))
+
+        return [
+            FlakyTest(
+                class_name=key[0],
+                test_name=key[1],
+                runs=sorted(value, key=lambda r: r.date, reverse=True),
+            )
+            for key, value in flakes_by_test.items()
+        ]
 
     def check_store(
         self, junit_xml_path: Path, branch: str, repo: str, sha: str
