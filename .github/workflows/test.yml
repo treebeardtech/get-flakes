@@ -46,4 +46,7 @@ jobs:
               with:
                   extra_args: --verbose --all-files
 
-            - run: pwd;ls -la;poetry run pytest -m 'not flakysim'
+            - run: |
+                  pwd;ls -la;
+                  poetry run python -m deeptest.server &
+                  poetry run pytest -m 'not flakysim'
