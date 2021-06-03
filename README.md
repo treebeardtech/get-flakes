@@ -1,6 +1,8 @@
 # get-flakes 🍦
 
-**[under construction, do not attempt to use] A cloud-native test flake detector **
+**under construction, do not attempt to use.**
+
+**A cloud-native test flake detector**
 
 ---
 
