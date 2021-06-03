@@ -3,10 +3,11 @@ from datetime import datetime, timedelta
 from logging import getLogger
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import List
 
 import uvicorn
 from deeptest.backend.models import Base
-from deeptest.db import Db, engine, get_db
+from deeptest.db import Db, FlakyTest, engine, get_db
 from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.datastructures import UploadFile
 
@@ -50,13 +51,28 @@ async def root():
     return {"message": "Hello World"}
 
 
+def make_report(days: int, flakes: List[FlakyTest]):
+    report = f"""
+    # Flaky Tests from the last {days} days
+
+{len(flakes)} testcases logged both passing and failing statuses on a single commit.
+"""
+
+    for ft in flakes:
+        report += f" * {ft.class_name}:{ft.test_name}"
+        for ff in ft.runs:
+            report += f"    * {ff.date} {ff.sha}"
+
+    return report
+
+
 @app.get("/repo/{provider}/{owner}/{repo}/report")
 async def report(
     provider: str, owner: str, repo: str, days: int = 7, db: Db = Depends(get_db)
 ):
     start = datetime.now() - timedelta(days=days)
-    _ = db.get_flakes(f"{provider}/{owner}/{repo}", start)
-    return {"message": "Hello World"}
+    flakes = db.get_flakes(f"{provider}/{owner}/{repo}", start)
+    return make_report(days, flakes)
 
 
 if __name__ == "__main__":
