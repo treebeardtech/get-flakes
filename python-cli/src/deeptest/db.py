@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from deeptest.backend.models import Session, TestResult
+from deeptest.backend.models import TestResult
 from junitparser import JUnitXml
 from junitparser.junitparser import TestCase
 
