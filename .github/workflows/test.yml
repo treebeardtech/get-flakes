@@ -48,5 +48,5 @@ jobs:
 
             - run: |
                   pwd;ls -la;
-                  poetry run python deeptest.server &
+                  poetry run python -m deeptest.server &
                   poetry run pytest -m 'not flakysim'
