@@ -1,11 +1,9 @@
-import uuid
 from typing import Any
 
 from sqlalchemy import BOOLEAN, TIMESTAMP, Column, Text, create_engine
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql.sqltypes import FLOAT, TIMESTAMP
+from sqlalchemy.sql.sqltypes import FLOAT, TIMESTAMP, Integer
 
 Base: Any = declarative_base()
 
@@ -19,7 +17,7 @@ Session = sessionmaker(engine)
 
 class TestResult(Base):
     __tablename__ = "test_result"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(Integer, primary_key=True)
     class_name = Column(Text, nullable=False)
     test_name = Column(Text, nullable=False)
     passed = Column(BOOLEAN, nullable=False)
