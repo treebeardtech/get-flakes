@@ -1,7 +1,8 @@
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import List, Optional
+
 from deeptest.backend.models import Session, TestResult
 from junitparser import JUnitXml
 from junitparser.junitparser import TestCase
@@ -12,7 +13,7 @@ class Failure:
     date: datetime
     duration_millis: float
     stderr: str
-    stdout: str
+    stdout: Optional[str]
 
 
 @dataclass
@@ -31,7 +32,7 @@ class Db:
             for suite in xml:
                 if suite is None:
                     continue
-                # handle suites
+
                 for testcase in suite:
                     test_result = TestResult(
                         class_name=testcase.classname,
@@ -42,7 +43,7 @@ class Db:
                         branch=branch,
                         repo=repo,
                         sha=sha,
-                        timestamp=suite.timestamp
+                        timestamp=suite.timestamp,
                     )
                     session.add(test_result)
             session.commit()
@@ -65,12 +66,12 @@ class Db:
             for failure in failures:
                 previous_failures = (
                     session.query(TestResult)
-                        .filter(TestResult.test_name == failure.name)
-                        .filter(TestResult.class_name == failure.classname)
-                        .filter(TestResult.repo == repo)
-                        .filter(TestResult.passed == False)
-                        .limit(100)
-                        .all()
+                    .filter(TestResult.test_name == failure.name)
+                    .filter(TestResult.class_name == failure.classname)
+                    .filter(TestResult.repo == repo)
+                    .filter(TestResult.passed == False)
+                    .limit(100)
+                    .all()
                 )
 
                 distinct_branches = set([result.branch for result in previous_failures])
@@ -81,7 +82,7 @@ class Db:
                             date=result.timestamp,
                             duration_millis=result.duration_millis,
                             stderr=result.message,
-                            stdout=None
+                            stdout=None,
                         )
                         for result in previous_failures
                     ]

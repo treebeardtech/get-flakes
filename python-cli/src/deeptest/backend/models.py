@@ -1,21 +1,24 @@
 import uuid
-from sqlalchemy import create_engine, Column, BOOLEAN, Text, TIMESTAMP
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from typing import Any
+
+from sqlalchemy import BOOLEAN, TIMESTAMP, Column, Text, create_engine
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.sqltypes import FLOAT, TIMESTAMP
 
-Base = declarative_base()
+Base: Any = declarative_base()
 
 engine = create_engine(
     # local dev credentials
-    'cockroachdb://panoptes:panoptes@localhost:26257/panoptes?sslmode=require',
-    echo=False                   # Log SQL queries to stdout
+    "cockroachdb://panoptes:panoptes@localhost:26257/panoptes?sslmode=require",
+    echo=False,  # Log SQL queries to stdout
 )
 Session = sessionmaker(engine)
 
+
 class TestResult(Base):
-    __tablename__ = 'test_result'
+    __tablename__ = "test_result"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     class_name = Column(Text, nullable=False)
     test_name = Column(Text, nullable=False)

@@ -5,7 +5,7 @@
     def test_eval(ii: int):
         change_quality = random.uniform(0, 1)
         assert change_quality &gt; BUG_THRESHOLD, "real bug"
-    
+
         if ii in FLAKY_TESTS:
             test_exec_quality = random.uniform(0, 1)
 &gt;           assert test_exec_quality &gt; FLAKE_THRESHOLD, "flaky test"
@@ -19,7 +19,7 @@ tests/test_flakiness_simulator.py:25: AssertionError</failure></testcase><testca
     def test_eval(ii: int):
         change_quality = random.uniform(0, 1)
         assert change_quality &gt; BUG_THRESHOLD, "real bug"
-    
+
         if ii in FLAKY_TESTS:
             test_exec_quality = random.uniform(0, 1)
 &gt;           assert test_exec_quality &gt; FLAKE_THRESHOLD, "flaky test"
