@@ -50,5 +50,10 @@ async def root():
     return {"message": "Hello World"}
 
 
+@app.get("/report")
+async def report(days: int = 7):
+    return {"message": "Hello World"}
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080, log_level="info")
