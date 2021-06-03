@@ -1,10 +1,13 @@
 from datetime import datetime
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
 from deeptest.backend.models import Session, TestResult
 from junitparser import JUnitXml
+from junitparser.junitparser import TestCase
 
 
+@dataclass
 class Failure:
     date: datetime
     duration_millis: float
@@ -12,6 +15,7 @@ class Failure:
     stdout: str
 
 
+@dataclass
 class FlakyTest:
     failures: List[Failure]
 
@@ -29,7 +33,6 @@ class Db:
                     continue
                 # handle suites
                 for testcase in suite:
-                    key: str = f"{testcase.classname}.{testcase.name}"
                     test_result = TestResult(
                         class_name=testcase.classname,
                         test_name=testcase.name,
@@ -47,4 +50,41 @@ class Db:
     def check_store(
         self, junit_xml_path: Path, branch: str, repo: str, sha: str
     ) -> List[FlakyTest]:
-        return []
+        xml = JUnitXml.fromfile(junit_xml_path)
+
+        failures: List[TestCase] = []
+        for suite in xml:
+            if suite is None:
+                continue
+            for testcase in suite:
+                if len(testcase.result) > 0:
+                    failures.append(testcase)
+
+        flakes = []
+        with Session() as session:
+            for failure in failures:
+                previous_failures = (
+                    session.query(TestResult)
+                        .filter(TestResult.test_name == failure.name)
+                        .filter(TestResult.class_name == failure.classname)
+                        .filter(TestResult.repo == repo)
+                        .filter(TestResult.passed == False)
+                        .limit(100)
+                        .all()
+                )
+
+                distinct_branches = set([result.branch for result in previous_failures])
+
+                if len(distinct_branches) >= 2 and len(previous_failures) > 3:
+                    failures = [
+                        Failure(
+                            date=result.timestamp,
+                            duration_millis=result.duration_millis,
+                            stderr=result.message,
+                            stdout=None
+                        )
+                        for result in previous_failures
+                    ]
+                    flakes.append(FlakyTest(failures=failures))
+
+        return flakes

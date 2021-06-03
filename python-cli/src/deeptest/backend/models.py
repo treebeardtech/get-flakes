@@ -10,7 +10,7 @@ Base = declarative_base()
 engine = create_engine(
     # local dev credentials
     'cockroachdb://panoptes:panoptes@localhost:26257/panoptes?sslmode=require',
-    echo=True                   # Log SQL queries to stdout
+    echo=False                   # Log SQL queries to stdout
 )
 Session = sessionmaker(engine)
 
