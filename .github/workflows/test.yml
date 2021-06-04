@@ -36,7 +36,7 @@ jobs:
         runs-on: ${{ matrix.cfg.os }}
         steps:
             - run: printenv
-            - run: echo $GITHUB_EVENT_PATH
+            # - run: echo $GITHUB_EVENT_PATH
             - run: cat $GITHUB_EVENT_PATH
             # - uses: actions/checkout@v2
             # - uses: actions/setup-python@v2
