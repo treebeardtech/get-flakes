@@ -84,3 +84,9 @@ Deploy on Kubernetes
 ```sh
 kubectl apply -f ...
 ```
+
+## Contribute to this Design
+
+This project is not yet ready for consumption but is available for ideation/feedback.
+
+Feature requests and feedback welcome via email and issues.
