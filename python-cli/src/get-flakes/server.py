@@ -6,8 +6,8 @@ from tempfile import NamedTemporaryFile
 from typing import List
 
 import uvicorn
-from deeptest.backend.models import Base
-from deeptest.db import Db, FlakyTest, engine, get_db
+from get-flakes.backend.models import Base
+from get-flakes.db import Db, FlakyTest, engine, get_db
 from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.datastructures import UploadFile
 

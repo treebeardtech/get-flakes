@@ -1,7 +1,7 @@
 import os.path
 
 from click.testing import CliRunner
-from deeptest import cli
+from get-flakes import cli
 
 pytest_plugins = "pytester"
 

@@ -2,58 +2,53 @@
 
 **under construction, do not attempt to use.**
 
-**A cloud-native test flake detector**
+**A CI tool that alerts teams when flaky tests are slowing down development**
 
 ---
 
-get-flakes helps you keep track of unreliable tests and the impact they have on your velocity.
+get-flakes notifies you when unreliable tests are hurting your team's productivity so you can prioritise a fix.
 
-This is done by ingesting your junit.xml test reports into a database and identifying  if restarting the tests 'fixed' the problem.
+This is done by storing test reports and alerting when retrying a run seems to 'fix' an issue.
+
+Excessive test retrying slows delivery, wastes resources, and hides real bugs.
 
 ## Quickstart
 
 Ensure you have Python 3 setup before you start
 
 Install the Python package
-```sh
+
+```none
 pip install get-flakes
 ```
 
-Start the server locally
+Upload a failing test report to a local Sqlite database
 
-```sh
-➜ export GF_API_KEY='some-key'
-
-➜ gf serve --api-key=a_key
-running on http://localhost:8080
-```
-
-Upload a failing test report
-
-```sh
-➜ export GF_API_KEY='some-key'
+```none
+# Fake your git details as we are not in a CI environment
 ➜ export GF_REPO='user/repo'
-➜ export GF_SERVER='http://localhost:8080'
 ➜ export GF_SHA='89787987987'
 
-➜ gf upload report_fail.xml
+➜ get-flakes upload report_fail.xml
 done
 ```
 
-There are no flake reports yet
+There are no flake reports yet because only 1 test report exists.
 
 ```log
-gf report --days=9
+get-flakes report --days=9
 
 ✓ 0 testcases logged both passing and failing statuses on a single commit.
 ```
 
-Upload a passing report (with the same SHA)
+Upload a passing report with the same SHA to simulate flaky behaviour
 
 ```log
-➜ gf upload report_pass.xml
+➜ get-flakes upload report_pass.xml
 done
 ```
+
+Get a flake summary describing this flaky behaviour
 
 ```log
 ➜ get-flakes --days=9
@@ -67,22 +62,38 @@ done
 ```
 
 These markdown reports fit nicely into Slack, pull requests, and issues
-## Deployment
 
-Deploy on a VM
-```sh
-get-flakes serve --deploy
+## Use with GitHub Actions and Postgres
+
+You will need a postgres connection string. We recommend checking this works locally before running in your pipeline.
+
+Upload test results from GitHub Actions
+
+```yaml
+      # Run your tests here and output results.xml in junit.xml format
+
+      - uses: actions/setup-python@v2
+      - run: pip install get-flakes
+      - run: get-flakes upload results.xml --db='${{ secrets.GF_CONNECTION_STRING }}'
 ```
 
-Deploy with Docker
+Create test report using a scheduled GitHub Action
 
-```sh
-docker run get-flakes serve --deploy
-```
-
-Deploy on Kubernetes
-```sh
-kubectl apply -f ...
+```yaml
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Run get-flakes'
+  schedule:
+    - cron: 0 0 * * */7
+jobs:
+  get-flakes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v2
+      - run: pip install get-flakes
+      - run: get-flakes --days 9 --db='${{ secrets.GF_CONNECTION_STRING }}'
 ```
 
 ## Contribute to this Design

@@ -1,16 +1,16 @@
 [tool.poetry]
-name = "deeptest"
+name = "get-flakes"
 version = "0.0.10"
 license = "Apache-2.0"
-homepage = "https://github.com/treebeardtech/deeptest"
-description = "deeptest"
+homepage = "https://github.com/treebeardtech/get-flakes"
+description = "get-flakes"
 authors = ["alex-treebeard <alex@treebeard.io>"]
 packages = [
-  {include = "deeptest", from = "src"},
+  {include = "get-flakes", from = "src"},
 ]
 
 [tool.poetry.scripts]
-deeptest = 'deeptest.cli:run'
+get-flakes = 'get-flakes.cli:run'
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -46,8 +46,8 @@ addopts = [
   "--strict-markers",
   "--capture=tee-sys",
   "--forked",
-  "-p","no:deeptest"
+  "-p","no:get-flakes"
 ]
 
 [tool.poetry.plugins."pytest11"]
-deeptest = "deeptest.pytest_plugin"
+get-flakes = "get-flakes.pytest_plugin"
