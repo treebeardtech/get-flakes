@@ -22,36 +22,12 @@ Install the Python package
 pip install get-flakes
 ```
 
-Upload a failing test report to a local Sqlite database
-
-```none
-# Fake your git details as we are not in a CI environment
-➜ export GF_REPO='user/repo'
-➜ export GF_SHA='89787987987'
-
-➜ get-flakes upload report_fail.xml
-done
-```
-
-There are no flake reports yet because only 1 test report exists.
+![Hello World](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAUCAAAAAAVAxSkAAABrUlEQVQ4y+3TPUvDQBgH8OdDOGa+oUMgk2MpdHIIgpSUiqC0OKirgxYX8QVFRQRpBRF8KShqLbgIYkUEteCgFVuqUEVxEIkvJFhae3m8S2KbSkcFBw9yHP88+eXucgH8kQZ/jSm4VDaIy9RKCpKac9NKgU4uEJNwhHhK3qvPBVO8rxRWmFXPF+NSM1KVMbwriAMwhDgVcrxeMZm85GR0PhvGJAAmyozJsbsxgNEir4iEjIK0SYqGd8sOR3rJAGN2BCEkOxhxMhpd8Mk0CXtZacxi1hr20mI/rzgnxayoidevcGuHXTC/q6QuYSMt1jC+gBIiMg12v2vb5NlklChiWnhmFZpwvxDGzuUzV8kOg+N8UUvNBp64vy9q3UN7gDXhwWLY2nMC3zRDibfsY7wjEkY79CdMZhrxSqqzxf4ZRPXwzWJirMicDa5KwiPeARygHXKNMQHEy3rMopDR20XNZGbJzUtrwDC/KshlLDWyqdmhxZzCsdYmf2fWZPoxCEDyfIvdtNQH0PRkH6Q51g8rFO3Qzxh2LbItcDCOpmuOsV7ntNaERe3v/lP/zO8yn4N+yNPrekmPAAAAAElFTkSuQmCC)
 
 ```log
 get-flakes report --days=9
 
 ✓ 0 testcases logged both passing and failing statuses on a single commit.
-```
-
-Upload a passing report with the same SHA to simulate flaky behaviour
-
-```log
-➜ get-flakes upload report_pass.xml
-done
-```
-
-Get a flake summary describing this flaky behaviour
-
-```log
-➜ get-flakes --days=9
 ```
 
 2 testcases logged both passing and failing statuses for a single commit
