@@ -8,8 +8,8 @@ from _pytest.config.argparsing import Parser
 from coverage import Coverage
 from pytest import ExitCode, hookimpl
 
-JUNIT_DEST = ".get-flakes/junit.xml"
-COV_DEST = ".get-flakes/.coverage"
+JUNIT_DEST = ".get_flakes/junit.xml"
+COV_DEST = ".get_flakes/.coverage"
 
 
 def is_enabled(config: Config) -> bool:
@@ -38,7 +38,7 @@ def pytest_terminal_summary(
     terminalreporter: Any, exitstatus: ExitCode, config: Config
 ):
     if is_enabled(config):
-        Path(".get-flakes").mkdir(exist_ok=True)
+        Path(".get_flakes").mkdir(exist_ok=True)
 
         if config.option.xmlpath != JUNIT_DEST:
             shutil.copy(config.option.xmlpath, JUNIT_DEST)

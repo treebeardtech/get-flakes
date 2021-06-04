@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from get-flakes.backend.models import TestResult
+from get_flakes.backend.models import TestResult
 from junitparser import JUnitXml
 from junitparser.junitparser import TestCase
 from sqlalchemy import distinct, func

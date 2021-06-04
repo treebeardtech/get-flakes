@@ -3,8 +3,8 @@ import os.path
 from pathlib import Path
 
 import pytest
-from get-flakes.backend.models import Base
-from get-flakes.db import Db, FlakyTest, FlakyTestRun
+from get_flakes.backend.models import Base
+from get_flakes.db import Db, FlakyTest, FlakyTestRun
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm.session import sessionmaker
 

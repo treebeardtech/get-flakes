@@ -6,10 +6,10 @@ from tempfile import NamedTemporaryFile
 from typing import List
 
 import uvicorn
-from get-flakes.backend.models import Base
-from get-flakes.db import Db, FlakyTest, engine, get_db
 from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.datastructures import UploadFile
+from get_flakes.backend.models import Base
+from get_flakes.db import Db, FlakyTest, engine, get_db
 
 logger = getLogger("uvicorn")
 

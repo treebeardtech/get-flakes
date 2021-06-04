@@ -8,7 +8,7 @@
             "name": "Server",
             "type": "python",
             "request": "launch",
-            "module": "deeptest.server",
+            "module": "get_flakes.server",
             "console": "integratedTerminal"
         }
     ]
