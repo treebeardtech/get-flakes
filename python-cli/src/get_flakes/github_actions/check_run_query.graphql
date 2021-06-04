@@ -1,0 +1,23 @@
+{
+  node(id: "MDExOlB1bGxSZXF1ZXN0NjYxOTYxMjY5") {
+    __typename
+    ... on PullRequest {
+      commits(last:10, ) {
+        nodes {
+          commit {
+            checkSuites(last:100) {
+              nodes {
+                checkRuns(last:100) {
+                  nodes{
+                    name
+                    databaseId
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
