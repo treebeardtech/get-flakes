@@ -39,8 +39,8 @@ jobs:
             - run: printenv
             - run: cat $GITHUB_EVENT_PATH
             - run: cat $GITHUB_ENV
-            - run: ls -la $XDG_CONFIG_HOME
-            - run: cat $XDG_CONFIG_HOME/**/*
+            - run: ls -la $XDG_CONFIG_HOME/**/*
+            # - run: cat $XDG_CONFIG_HOME/**/*
             # - uses: actions/setup-python@v2
             #   with:
             #       python-version: ${{ matrix.cfg.python-version }}
