@@ -48,6 +48,6 @@ jobs:
 
             - run: |
                   pwd;ls -la;
-                  poetry run python -m get-flakes.server &
+                  poetry run python -m get_flakes.server &
                   sleep 1
                   poetry run pytest -m 'not flakysim'
