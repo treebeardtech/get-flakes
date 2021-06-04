@@ -38,7 +38,6 @@ jobs:
             - uses: actions/checkout@v2
             - run: printenv
             - run: cat $GITHUB_EVENT_PATH
-            - run: cat /home/runner/work/_temp/_runner_file_commands/set_env_ea021ccd-5cb5-43a7-b019-38de4b586b5c
             - run: cat $GITHUB_ENV
             - run: cat $XDG_CONFIG_HOME
             # - uses: actions/setup-python@v2
