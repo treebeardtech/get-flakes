@@ -52,14 +52,14 @@ Get a flake summary describing this flaky behaviour
 
 ```log
 ➜ get-flakes --days=9
+```
 
 2 testcases logged both passing and failing statuses for a single commit
 
- * tests.test_flakiness_simulator:test_eval[23]
-   * 2021-06-03 987987987
- * tests.test_flakiness_simulator:test_eval[88]
-   * 2021-06-03 987987987
-```
+| test case | passes | fails | pass rate | logs |
+|-|-|-|-|-|
+|  tests.test_flakiness_simulator:test_eval[23] | 8 | 2 | 80% |✓✓✓✓✓✓✓✓×× |
+|  tests.test_flakiness_simulator:test_eval[88] | 8 | 2 | 80% |✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓×× |
 
 These markdown reports fit nicely into Slack, pull requests, and issues
 
