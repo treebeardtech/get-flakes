@@ -59,7 +59,7 @@ Get a flake summary describing this flaky behaviour
 | test case | passes | fails | pass rate | logs |
 |-|-|-|-|-|
 |  tests.test_flakiness_simulator:test_eval[23] | 8 | 2 | 80% |✓✓✓✓✓✓✓✓×× |
-|  tests.test_flakiness_simulator:test_eval[88] | 8 | 2 | 80% |✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓×× |
+|  tests.test_flakiness_simulator:test_eval[88] | 8 | 2 | 80% |✓✓✓✓✓✓✓✓××<br/>✓✓✓✓✓✓✓✓××<br/>✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓××✓✓✓✓✓✓✓✓×× |
 
 These markdown reports fit nicely into Slack, pull requests, and issues
 

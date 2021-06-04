@@ -18,36 +18,40 @@ jobs:
                 cfg:
                     - os: ubuntu-latest
                       python-version: '3.6'
-                    - os: ubuntu-latest
-                      python-version: '3.7'
-                    - os: ubuntu-latest
-                      python-version: '3.8'
-                    - os: ubuntu-latest
-                      python-version: '3.9'
-                    - os: macos-latest
-                      python-version: '3.6'
-                    - os: macos-latest
-                      python-version: '3.7'
-                    - os: macos-latest
-                      python-version: '3.8'
-                    - os: macos-latest
-                      python-version: '3.9'
+                    # - os: ubuntu-latest
+                    #   python-version: '3.7'
+                    # - os: ubuntu-latest
+                    #   python-version: '3.8'
+                    # - os: ubuntu-latest
+                    #   python-version: '3.9'
+                    # - os: macos-latest
+                    #   python-version: '3.6'
+                    # - os: macos-latest
+                    #   python-version: '3.7'
+                    # - os: macos-latest
+                    #   python-version: '3.8'
+                    # - os: macos-latest
+                    #   python-version: '3.9'
 
         runs-on: ${{ matrix.cfg.os }}
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
-              with:
-                  python-version: ${{ matrix.cfg.python-version }}
-            - run: pip install poetry
-            - run: poetry config virtualenvs.in-project true
-            - run: poetry install
-            - uses: pre-commit/action@v2.0.0
-              with:
-                  extra_args: --verbose --all-files
-
             - run: |
-                  pwd;ls -la;
-                  poetry run python -m get_flakes.server &
-                  sleep 1
-                  poetry run pytest -m 'not flakysim'
+                echo $GITHUB_EVENT_NAME
+                echo $GITHUB_EVENT_PATH
+                cat $GITHUB_EVENT_PATH
+            # - uses: actions/checkout@v2
+            # - uses: actions/setup-python@v2
+            #   with:
+            #       python-version: ${{ matrix.cfg.python-version }}
+            # - run: pip install poetry
+            # - run: poetry config virtualenvs.in-project true
+            # - run: poetry install
+            # - uses: pre-commit/action@v2.0.0
+            #   with:
+            #       extra_args: --verbose --all-files
+
+            # - run: |
+            #       pwd;ls -la;
+            #       poetry run python -m get_flakes.server &
+            #       sleep 1
+            #       poetry run pytest -m 'not flakysim'
