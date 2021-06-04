@@ -1,16 +1,29 @@
 {
-  node(id: "MDExOlB1bGxSZXF1ZXN0NjYxOTYxMjY5") {
-    __typename
-    ... on PullRequest {
-      commits(last:10, ) {
-        nodes {
-          commit {
-            checkSuites(last:100) {
+  repository(name: "get-flakes", owner: "treebeardtech") {
+    object(oid: "1dcd188e20cff83220dac57b7bb9dff48529b928") {
+      __typename
+      ... on Commit {
+        commitUrl
+        checkSuites(last: 100) {
+          
+          nodes {
+            workflowRun {
+              databaseId
+              workflow{
+                name
+              }
+            }
+            checkRuns(last: 100) {
               nodes {
-                checkRuns(last:100) {
-                  nodes{
-                    name
-                    databaseId
+                name
+                databaseId
+                url
+                permalink
+                detailsUrl
+                summary
+                annotations(last: 10) {
+                  nodes {
+                    title
                   }
                 }
               }
