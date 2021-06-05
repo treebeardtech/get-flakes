@@ -47,7 +47,6 @@ jobs:
                   extra_args: --verbose --all-files
 
             - run: |
-                  pwd;ls -la;
-                  poetry run python -m get_flakes.server &
-                  sleep 1
-                  poetry run pytest -m 'not flakysim'
+                  poetry run pytest
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

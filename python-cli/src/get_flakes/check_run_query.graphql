@@ -1,0 +1,30 @@
+query {
+  repository(name: "get-flakes", owner: "treebeardtech") {
+    nameWithOwner
+    pullRequests(last: 100) {
+      nodes {
+        number
+        commits(last: 10) {
+          nodes {
+            commit {
+              checkSuites(last:10) {
+                nodes {
+                  app {
+                    name
+                  }
+                  checkRuns(last: 10) {
+                    nodes {
+                      databaseId
+                      conclusion
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
