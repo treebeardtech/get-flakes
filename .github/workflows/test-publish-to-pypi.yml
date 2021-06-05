@@ -6,9 +6,6 @@ on:
             - main
 jobs:
     build-n-publish:
-        defaults:
-            run:
-                working-directory: python-cli
         runs-on: macos-latest
         steps:
             - uses: actions/checkout@v2

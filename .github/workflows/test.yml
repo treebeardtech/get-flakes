@@ -7,10 +7,6 @@ on:
 
 jobs:
     pytest:
-        defaults:
-            run:
-                working-directory: python-cli
-
         timeout-minutes: 20
         strategy:
             fail-fast: false
