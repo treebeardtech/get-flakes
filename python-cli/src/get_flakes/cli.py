@@ -7,6 +7,7 @@ import click
 import dotenv
 import requests
 from click.core import Context
+from requests.models import Response
 
 ENDPOINT = "https://api.github.com/graphql"
 
@@ -32,13 +33,14 @@ class FlakeReport:
     flake_incidents: List[FlakeIncident]
 
 
-def get_api_response(token: str, repo: str, days: int):
+def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
     query = (Path(__file__).parent / "check_run_query.graphql").read_text()
     data = {"query": query}
     headers = {"Authorization": f"Bearer {token}"}
 
-    resp = requests.post(ENDPOINT, json=data, headers=headers).json()
-    return resp
+    resp: Response = requests.post(ENDPOINT, json=data, headers=headers)
+    assert resp.status_code == 200
+    return resp.json()
 
 
 def get_check_runs(data: Dict[str, Any]):
@@ -55,10 +57,10 @@ def get_flake_report(flake_incidents: List[FlakeIncident]):
 
 
 def render_report(report: FlakeReport):
-    return ""
+    return "stub"
 
 
-@click.group()
+@click.command()
 @click.option("--debug/--no-debug", default=False)
 @click.option("--days", default=7)
 @click.pass_context

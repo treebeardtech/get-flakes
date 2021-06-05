@@ -36,23 +36,17 @@ jobs:
         runs-on: ${{ matrix.cfg.os }}
         steps:
             - uses: actions/checkout@v2
-            - run: printenv
-            - run: cat $GITHUB_EVENT_PATH
-            - run: cat $GITHUB_ENV
-            - run: ls -la $XDG_CONFIG_HOME/**/*
-            # - run: cat $XDG_CONFIG_HOME/**/*
-            # - uses: actions/setup-python@v2
-            #   with:
-            #       python-version: ${{ matrix.cfg.python-version }}
-            # - run: pip install poetry
-            # - run: poetry config virtualenvs.in-project true
-            # - run: poetry install
-            # - uses: pre-commit/action@v2.0.0
-            #   with:
-            #       extra_args: --verbose --all-files
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: ${{ matrix.cfg.python-version }}
+            - run: pip install poetry
+            - run: poetry config virtualenvs.in-project true
+            - run: poetry install
+            - uses: pre-commit/action@v2.0.0
+              with:
+                  extra_args: --verbose --all-files
 
-            # - run: |
-            #       pwd;ls -la;
-            #       poetry run python -m get_flakes.server &
-            #       sleep 1
-            #       poetry run pytest -m 'not flakysim'
+            - run: |
+                  poetry run pytest
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -8,4 +8,4 @@ class TestCli:
     def test_report(self, testdir):
         runner = CliRunner()
         result = runner.invoke(cli.run, f"--days=7", catch_exceptions=False)
-        print(result.output)
+        assert result.output.startswith("stub")
