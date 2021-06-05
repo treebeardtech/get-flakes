@@ -42,6 +42,7 @@ def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
     assert resp.status_code == 200
     return resp.json()
 
+
 def get_check_runs(data: Dict[str, Any]):
     # url = f"https://github.com/{repo}/pull/{pr_number}/checks?check_run_id={check_run_id}"
     return []

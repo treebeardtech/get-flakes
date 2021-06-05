@@ -1,4 +1,5 @@
 from click.testing import CliRunner
+
 from get_flakes import cli
 
 pytest_plugins = "pytester"
