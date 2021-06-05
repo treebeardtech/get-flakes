@@ -27,10 +27,9 @@ get-flakes report --days=9
 ✓ 0 testcases logged both passing and failing statuses on a single commit.
 ```
 
-| Commit | Check | Logs |
+| Commit | Checks | Runs |
 |-|-|-|
-|  Update README.md | pytest (ubuntu-latest, 3.6) | ×✓ |
-|  Update README.md | pytest (ubuntu-latest, 3.9) | ××✓ |
+|  <a href="678b0662"><code>Update README.md</code></a> | pytest (ubuntu-latest, 3.6), pytest (ubuntu-latest, 3.9) | ××✓ |
 |  Another commit merged to main| pytest (ubuntu-latest, 3.6)| ×✓×✓ |
 
 These markdown reports fit nicely into Slack, pull requests, and issues

@@ -27,6 +27,7 @@ fastapi = {extras = ["all"], version = "^0.65.1"}
 requests = "^2.25.1"
 python-multipart = "^0.0.5"
 gunicorn = "^20.1.0"
+PyGithub = "^1.55"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
@@ -35,6 +36,8 @@ pytest-cov = "^2.11.1"
 snapshottest = "^0.6.0"
 pytest-xdist = "^2.2.1"
 pytest-randomly = "^3.5.0"
+pytest-env = "^0.6.2"
+python-dotenv = "^0.17.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
