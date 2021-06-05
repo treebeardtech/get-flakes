@@ -20,17 +20,14 @@ Install the Python package
 pip install get-flakes
 ```
 
-
 ```log
 get-flakes report --days=9
-
-✓ 0 testcases logged both passing and failing statuses on a single commit.
 ```
 
-| Commit | Checks | Runs |
-|-|-|-|
-|  <a href="678b0662"><code>Update README.md</code></a> | pytest (ubuntu-latest, 3.6), pytest (ubuntu-latest, 3.9) | ××✓ |
-|  Another commit merged to main| pytest (ubuntu-latest, 3.6)| ×✓×✓ |
+| Pull Request | Commit | Checks | Runs |
+|-|-|-|-|
+| Re-design (<a href="https://github.com/treebeardtech/get-flakes/pull/19">#19</a>) |  Update README.md | pytest (ubuntu-latest, 3.6), pytest (ubuntu-latest, 3.9) | <a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:green" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">✓</a> |
+| Re-design (<a href="https://github.com/treebeardtech/get-flakes/pull/19">#19</a>) |  Another commit merged to main| pytest (ubuntu-latest, 3.6)| <a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:green" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">✓</a> |
 
 These markdown reports fit nicely into Slack, pull requests, and issues
 

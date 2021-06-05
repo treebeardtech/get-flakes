@@ -1,4 +1,10 @@
 query {
+  rateLimit {
+    limit
+    cost
+    remaining
+    resetAt
+  }
   repository(name: "get-flakes", owner: "treebeardtech") {
     nameWithOwner
     pullRequests(last: 100) {
