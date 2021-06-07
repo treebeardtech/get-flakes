@@ -2,41 +2,26 @@
 
 **under construction, do not attempt to use.**
 
-**A CI tool that alerts teams when flaky tests are slowing down development**
+**A CI tool that finds flaky GitHub Actions checks on recent pull requests**
 
 ---
 
-get-flakes notifies you when unreliable tests are hurting your team's productivity so you can prioritise a fix.
+get-flakes lets you automatically alert the team when flaky tests are hurting productivity.
+
+It does this by querying your GitHub repo's recent GitHub Actions. When an action has been restarted and gives a different result, get-flakes marks this as flaky.
 
 Excessive test retrying slows delivery, wastes resources, and hides real bugs.
 
 ## Quickstart
 
-Ensure you have Python 3 setup before you start
+Create this file in your repo so you can manually trigger get-flakes and have it run periodically.
 
-Install the Python package
-
-```none
-pip install get-flakes
-```
-
-```log
-get-flakes report --days=9
-```
-
-| Pull Request | Commit | Checks | Runs |
-|-|-|-|-|
-| Re-design (<a href="https://github.com/treebeardtech/get-flakes/pull/19">#19</a>) |  Update README.md | pytest (ubuntu-latest, 3.6), pytest (ubuntu-latest, 3.9) | <a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:green" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">✓</a> |
-| Re-design (<a href="https://github.com/treebeardtech/get-flakes/pull/19">#19</a>) |  Another commit merged to main| pytest (ubuntu-latest, 3.6)| <a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:green" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">✓</a> |
-
-These markdown reports fit nicely into Slack, pull requests, and issues
-
-## Use with GitHub Actions
-
-Create test report using a scheduled GitHub Action
+If more than 5% of commits in pull requests exhibit flakiness then the check fails.
 
 ```yaml
+# .github/workflows/get-flakes.yml
 on:
+  push: # remove this once you are setup
   workflow_dispatch:
     inputs:
       tags:
@@ -49,7 +34,34 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
       - run: pip install get-flakes
-      - run: get-flakes --days 9 --token='${{ secrets.GITHUB_TOKEN }}'
+      - run: |
+          get-flakes \
+            --days 8 \
+            --alarm-threshold-percentage=5
+            --token='${{ secrets.GITHUB_TOKEN }}'
+```
+
+This will write a markdown report which can be published back to GitHub:
+
+<p align="center">
+  <img width="700" src="docs/report.png">
+</p>
+
+
+## Use outside of GitHub Actions
+
+Get-Flakes currently only works for GitHub Action results for GitHub repos. You can run this locally though to try it out.
+
+```sh
+pip install get-flakes
+```
+
+```sh
+get-flakes report \
+--days=9 \
+--github_token=<...> \
+--repo=treebeardtech/get-flakes \
+--check_sha=<...> # The commit where the report goes, default is HEAD commit
 ```
 
 ## Contribute to this Design

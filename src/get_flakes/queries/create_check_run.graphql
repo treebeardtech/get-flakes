@@ -1,0 +1,27 @@
+mutation create($sha: GitObjectID!, $text: String) {
+  createCheckRun(input: {
+    clientMutationId: "blah",
+    headSha: $sha,
+    repositoryId: "MDEwOlJlcG9zaXRvcnkzNDExODMzMzg",
+    name: "get-flakes",
+    status: COMPLETED
+    conclusion: FAILURE
+    actions: {
+      label: ""
+      description: "desc",
+      identifier: "iden"
+    }
+    output: {
+      summary: "7 of the 93 PR commits made in the last 4 days were flaky. This is a flake rate of 7.5%, over the 5% alarm threshold."
+      text: $text
+      title: "Flake Report for the Last 4 Days"
+
+    }
+  }
+  ) {
+    clientMutationId,
+    checkRun {
+      databaseId
+    }
+  }
+}

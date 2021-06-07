@@ -1,3 +1,4 @@
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -7,9 +8,16 @@ import click
 import dotenv
 import requests
 from click.core import Context
+from jinja2 import Environment, select_autoescape
+from jinja2.loaders import DictLoader
 from requests.models import Response
 
 ENDPOINT = "https://api.github.com/graphql"
+TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.html.jinja"
+QUERIES_DIR = Path(__file__).parent / "queries"
+
+dotenv.load_dotenv()
+token = os.environ["GITHUB_TOKEN"]
 
 
 @dataclass
@@ -33,8 +41,30 @@ class FlakeReport:
     flake_incidents: List[FlakeIncident]
 
 
+def create_check_run(report_body: str):
+    query = (QUERIES_DIR / "create_check_run.graphql").read_text()
+    data = {
+        "query": query,
+        "variables": {
+            "sha": "4ee9649155afeeca72f8009c0b86900df170f1ea",
+            "text": report_body,
+        },
+    }
+    headers = {"Authorization": f"Bearer {token}"}
+
+    resp: Response = requests.post(ENDPOINT, json=data, headers=headers)
+    print(resp.content)
+    assert resp.status_code == 200
+    output = resp.json()
+    if "errors" in output:
+        click.echo(json.dumps(output))
+        raise RuntimeError(f"Failed to create checkrun {output}")
+
+    return output
+
+
 def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
-    query = (Path(__file__).parent / "check_run_query.graphql").read_text()
+    query = (QUERIES_DIR / "get_check_runs.graphql").read_text()
     data = {"query": query}
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -56,8 +86,13 @@ def get_flake_report(flake_incidents: List[FlakeIncident]):
     return FlakeReport(flake_incidents=[])
 
 
-def render_report(report: FlakeReport):
-    return "stub"
+def render_report(report: FlakeReport) -> str:
+    env = Environment(
+        loader=DictLoader({"report": (TEMPLATE_PATH).read_text()}),
+        autoescape=select_autoescape(),
+    )
+    template = env.get_template("report")
+    return template.render(days=9)
 
 
 @click.command()
@@ -68,8 +103,6 @@ def run(ctx: Context, debug: bool, days: int):
     ctx.ensure_object(dict)
     ctx.obj["DEBUG"] = debug
 
-    dotenv.load_dotenv()
-    token = os.environ["GITHUB_TOKEN"]
     repo = "treebeardtech/get-flakes"
 
     api_response: Dict[str, Any] = get_api_response(token, repo, days)
