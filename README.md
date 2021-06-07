@@ -2,40 +2,20 @@
 
 **under construction, do not attempt to use.**
 
-**A CI tool that alerts teams when flaky tests are slowing down development**
+**A CI tool that finds flaky GitHub checks on recent pull requests**
 
 ---
 
-get-flakes notifies you when unreliable tests are hurting your team's productivity so you can prioritise a fix.
+get-flakes lets you automatically alert the team when flaky tests are hurting productivity.
 
 Excessive test retrying slows delivery, wastes resources, and hides real bugs.
 
 ## Quickstart
 
-Ensure you have Python 3 setup before you start
-
-Install the Python package
-
-```none
-pip install get-flakes
-```
-
-```log
-get-flakes report --days=9
-```
-
-| Pull Request | Commit | Checks | Runs |
-|-|-|-|-|
-| Re-design (<a href="https://github.com/treebeardtech/get-flakes/pull/19">#19</a>) |  Update README.md | pytest (ubuntu-latest, 3.6), pytest (ubuntu-latest, 3.9) | <a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:green" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">✓</a> |
-| Re-design (<a href="https://github.com/treebeardtech/get-flakes/pull/19">#19</a>) |  Another commit merged to main| pytest (ubuntu-latest, 3.6)| <a style="color:red" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">×</a><a style="color:green" href="https://github.com/treebeardtech/get-flakes/pull/19/checks?check_run_id=2748487234">✓</a> |
-
-These markdown reports fit nicely into Slack, pull requests, and issues
-
-## Use with GitHub Actions
-
-Create test report using a scheduled GitHub Action
+Create this file in your repo so you can manually trigger get-flakes and have it run periodically.
 
 ```yaml
+# .github/workflows/get-flakes.yml
 on:
   workflow_dispatch:
     inputs:
@@ -49,8 +29,36 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
       - run: pip install get-flakes
-      - run: get-flakes --days 9 --token='${{ secrets.GITHUB_TOKEN }}'
+      - run: get-flakes --days 8 --token='${{ secrets.GITHUB_TOKEN }}'
 ```
+
+This will write a markdown report which can be published back to GitHub:
+
+<p align="center">
+  <img width="700" src="docs/report.png">
+</p>
+
+
+## Use outisde of GitHub Actions
+
+
+Ensure you have Python 3 setup before you start
+
+Install the Python package
+
+```sh
+pip install get-flakes
+```
+
+```sh
+get-flakes report \
+--days=9 \
+--github_token=<...> \
+--repo=treebeardtech/get-flakes \
+--check_sha=<...> # The commit where the report goes, default is HEAD commit
+```
+
+
 
 ## Contribute to this Design
 
