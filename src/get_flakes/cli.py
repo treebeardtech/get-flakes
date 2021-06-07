@@ -13,7 +13,7 @@ from jinja2.loaders import DictLoader
 from requests.models import Response
 
 ENDPOINT = "https://api.github.com/graphql"
-TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.md.jinja"
+TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.html.jinja"
 QUERIES_DIR = Path(__file__).parent / "queries"
 
 dotenv.load_dotenv()
