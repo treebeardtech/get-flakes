@@ -2,8 +2,10 @@ mutation create($sha: GitObjectID!) {
   createCheckRun(input: {
     clientMutationId: "blah",
     headSha: $sha,
-    repositoryId: "treebeardtech/get-flakes",
+    repositoryId: "MDEwOlJlcG9zaXRvcnkzNDExODMzMzg",
     name: "get-flakes",
+    status: COMPLETED
+    conclusion: SUCCESS
     actions: {
       label: "label",
       description: "desc",
@@ -13,6 +15,7 @@ mutation create($sha: GitObjectID!) {
       summary: "summ"
       text: "text"
       title: "title"
+
     }
   }
   ) {

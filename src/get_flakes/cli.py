@@ -7,9 +7,12 @@ import click
 import dotenv
 import requests
 from click.core import Context
+from jinja2 import Environment, select_autoescape
+from jinja2.loaders import DictLoader
 from requests.models import Response
 
 ENDPOINT = "https://api.github.com/graphql"
+TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.md.jinja"
 
 dotenv.load_dotenv()
 token = os.environ["GITHUB_TOKEN"]
@@ -45,6 +48,7 @@ def create_check_run():
     headers = {"Authorization": f"Bearer {token}"}
 
     resp: Response = requests.post(ENDPOINT, json=data, headers=headers)
+    print(resp.content)
     assert resp.status_code == 200
     return resp.json()
 
@@ -72,8 +76,13 @@ def get_flake_report(flake_incidents: List[FlakeIncident]):
     return FlakeReport(flake_incidents=[])
 
 
-def render_report(report: FlakeReport):
-    return "stub"
+def render_report(report: FlakeReport) -> str:
+    env = Environment(
+        loader=DictLoader({"report": (TEMPLATE_PATH).read_text()}),
+        autoescape=select_autoescape(),
+    )
+    template = env.get_template("report")
+    return template.render(days=9)
 
 
 @click.command()

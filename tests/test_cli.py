@@ -13,3 +13,7 @@ class TestCli:
 
     def test_create_check_run(self):
         cli.create_check_run()
+
+    def test_render_report(self):
+        report = cli.render_report(cli.FlakeReport(flake_incidents=[]))
+        assert isinstance(report, str)
