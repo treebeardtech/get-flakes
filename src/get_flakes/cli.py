@@ -13,6 +13,7 @@ from requests.models import Response
 
 ENDPOINT = "https://api.github.com/graphql"
 TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.md.jinja"
+QUERIES_DIR = Path(__file__).parent / "queries"
 
 dotenv.load_dotenv()
 token = os.environ["GITHUB_TOKEN"]
@@ -40,7 +41,7 @@ class FlakeReport:
 
 
 def create_check_run():
-    query = (Path(__file__).parent / "create_check_run.graphql").read_text()
+    query = (QUERIES_DIR / "create_check_run.graphql").read_text()
     data = {
         "query": query,
         "variables": {"sha": "4ee9649155afeeca72f8009c0b86900df170f1ea"},
@@ -54,7 +55,7 @@ def create_check_run():
 
 
 def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
-    query = (Path(__file__).parent / "check_run_query.graphql").read_text()
+    query = (QUERIES_DIR / "get_check_runs.graphql").read_text()
     data = {"query": query}
     headers = {"Authorization": f"Bearer {token}"}
 
