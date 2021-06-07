@@ -2,17 +2,21 @@
 
 **under construction, do not attempt to use.**
 
-**A CI tool that finds flaky GitHub checks on recent pull requests**
+**A CI tool that finds flaky GitHub Actions checks on recent pull requests**
 
 ---
 
 get-flakes lets you automatically alert the team when flaky tests are hurting productivity.
+
+It does this by querying your GitHub repo's recent check runs for GitHub Actions activity. When an action has been restarted and gives a different result, get-flakes marks this as flaky.
 
 Excessive test retrying slows delivery, wastes resources, and hides real bugs.
 
 ## Quickstart
 
 Create this file in your repo so you can manually trigger get-flakes and have it run periodically.
+
+If more than 5% of commits in pull requests exhibit flakiness then the check fails.
 
 ```yaml
 # .github/workflows/get-flakes.yml
@@ -29,7 +33,11 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
       - run: pip install get-flakes
-      - run: get-flakes --days 8 --token='${{ secrets.GITHUB_TOKEN }}'
+      - run: |
+          get-flakes \
+            --days 8 \
+            --alarm-threshold=.05
+            --token='${{ secrets.GITHUB_TOKEN }}'
 ```
 
 This will write a markdown report which can be published back to GitHub:
