@@ -8,7 +8,7 @@
 
 get-flakes lets you automatically alert the team when flaky tests are hurting productivity.
 
-It does this by querying your GitHub repo's recent check runs for GitHub Actions activity. When an action has been restarted and gives a different result, get-flakes marks this as flaky.
+It does this by querying your GitHub repo's recent GitHub Actions. When an action has been restarted and gives a different result, get-flakes marks this as flaky.
 
 Excessive test retrying slows delivery, wastes resources, and hides real bugs.
 
@@ -21,6 +21,7 @@ If more than 5% of commits in pull requests exhibit flakiness then the check fai
 ```yaml
 # .github/workflows/get-flakes.yml
 on:
+  push: # remove this once you are setup
   workflow_dispatch:
     inputs:
       tags:
@@ -47,12 +48,9 @@ This will write a markdown report which can be published back to GitHub:
 </p>
 
 
-## Use outisde of GitHub Actions
+## Use outside of GitHub Actions
 
-
-Ensure you have Python 3 setup before you start
-
-Install the Python package
+Get-Flakes currently only works for GitHub Action results for GitHub repos. You can run this locally though to try it out.
 
 ```sh
 pip install get-flakes
@@ -65,8 +63,6 @@ get-flakes report \
 --repo=treebeardtech/get-flakes \
 --check_sha=<...> # The commit where the report goes, default is HEAD commit
 ```
-
-
 
 ## Contribute to this Design
 
