@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from click.testing import CliRunner
 
 from get_flakes import cli
@@ -12,7 +14,7 @@ class TestCli:
         assert isinstance(result, str)
 
     def test_create_check_run(self):
-        cli.create_check_run()
+        cli.create_check_run((Path(__file__).parent / "example_report.md").read_text())
 
     def test_render_report(self):
         report = cli.render_report(cli.FlakeReport(flake_incidents=[]))

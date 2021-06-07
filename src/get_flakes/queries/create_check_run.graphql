@@ -1,4 +1,4 @@
-mutation create($sha: GitObjectID!) {
+mutation create($sha: GitObjectID!, $text: String) {
   createCheckRun(input: {
     clientMutationId: "blah",
     headSha: $sha,
@@ -12,9 +12,9 @@ mutation create($sha: GitObjectID!) {
       identifier: "iden"
     }
     output: {
-      summary: "summ"
-      text: "text"
-      title: "title"
+      summary: "There were 2 pull requests showing flaky behaviour upon retry."
+      text: $text
+      title: "Flake Report for the Last 4 Days"
 
     }
   }

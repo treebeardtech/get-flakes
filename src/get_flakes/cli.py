@@ -1,3 +1,4 @@
+import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,18 +41,26 @@ class FlakeReport:
     flake_incidents: List[FlakeIncident]
 
 
-def create_check_run():
+def create_check_run(report_body: str):
     query = (QUERIES_DIR / "create_check_run.graphql").read_text()
     data = {
         "query": query,
-        "variables": {"sha": "4ee9649155afeeca72f8009c0b86900df170f1ea"},
+        "variables": {
+            "sha": "4ee9649155afeeca72f8009c0b86900df170f1ea",
+            "text": report_body,
+        },
     }
     headers = {"Authorization": f"Bearer {token}"}
 
     resp: Response = requests.post(ENDPOINT, json=data, headers=headers)
     print(resp.content)
     assert resp.status_code == 200
-    return resp.json()
+    output = resp.json()
+    if "errors" in output:
+        click.echo(json.dumps(output))
+        raise RuntimeError(f"Failed to create checkrun {output}")
+
+    return output
 
 
 def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
