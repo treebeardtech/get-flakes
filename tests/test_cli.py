@@ -10,3 +10,6 @@ class TestCli:
         runner = CliRunner()
         result = runner.invoke(cli.run, f"--days=7", catch_exceptions=False)
         assert result.output.startswith("stub")
+
+    def test_create_check_run(self):
+        cli.create_check_run()

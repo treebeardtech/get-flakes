@@ -11,6 +11,9 @@ from requests.models import Response
 
 ENDPOINT = "https://api.github.com/graphql"
 
+dotenv.load_dotenv()
+token = os.environ["GITHUB_TOKEN"]
+
 
 @dataclass
 class CheckRun:
@@ -31,6 +34,16 @@ class FlakeIncident:
 @dataclass
 class FlakeReport:
     flake_incidents: List[FlakeIncident]
+
+
+def create_check_run():
+    query = (Path(__file__).parent / "create_check_run.graphql").read_text()
+    data = {"query": query}
+    headers = {"Authorization": f"Bearer {token}"}
+
+    resp: Response = requests.post(ENDPOINT, json=data, headers=headers)
+    assert resp.status_code == 200
+    return resp.json()
 
 
 def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
@@ -68,8 +81,6 @@ def run(ctx: Context, debug: bool, days: int):
     ctx.ensure_object(dict)
     ctx.obj["DEBUG"] = debug
 
-    dotenv.load_dotenv()
-    token = os.environ["GITHUB_TOKEN"]
     repo = "treebeardtech/get-flakes"
 
     api_response: Dict[str, Any] = get_api_response(token, repo, days)

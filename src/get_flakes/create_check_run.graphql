@@ -1,0 +1,24 @@
+mutation create($sha: GitObjectID!) {
+  createCheckRun(input: {
+    clientMutationId: "blah",
+    headSha: $sha,
+    repositoryId: "treebeardtech/get-flakes",
+    name: "get-flakes",
+    actions: {
+      label: "label",
+      description: "desc",
+      identifier: "iden"
+    }
+    output: {
+      summary: "summ"
+      text: "text"
+      title: "title"
+    }
+  }
+  ) {
+    clientMutationId,
+    checkRun {
+      databaseId
+    }
+  }
+}
