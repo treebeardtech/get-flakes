@@ -7,12 +7,12 @@ mutation create($sha: GitObjectID!, $text: String) {
     status: COMPLETED
     conclusion: SUCCESS
     actions: {
-      label: "label",
+      label: ""
       description: "desc",
       identifier: "iden"
     }
     output: {
-      summary: "There were 2 pull requests showing flaky behaviour upon retry."
+      summary: "2 of the 93 PR commits made in the last 4 days were flaky. This is a flake rate of 2%"
       text: $text
       title: "Flake Report for the Last 4 Days"
 

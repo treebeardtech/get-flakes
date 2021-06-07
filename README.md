@@ -36,7 +36,7 @@ jobs:
       - run: |
           get-flakes \
             --days 8 \
-            --alarm-threshold=.05
+            --alarm-threshold-percentage=5
             --token='${{ secrets.GITHUB_TOKEN }}'
 ```
 
