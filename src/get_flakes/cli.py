@@ -38,7 +38,10 @@ class FlakeReport:
 
 def create_check_run():
     query = (Path(__file__).parent / "create_check_run.graphql").read_text()
-    data = {"query": query}
+    data = {
+        "query": query,
+        "variables": {"sha": "4ee9649155afeeca72f8009c0b86900df170f1ea"},
+    }
     headers = {"Authorization": f"Bearer {token}"}
 
     resp: Response = requests.post(ENDPOINT, json=data, headers=headers)
