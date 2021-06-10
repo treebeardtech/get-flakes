@@ -2,7 +2,7 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Set
+from typing import Any, DefaultDict, Dict, List, Optional, Set
 
 import click
 import dotenv
@@ -13,7 +13,7 @@ from jinja2.loaders import DictLoader
 from pydantic.main import BaseModel
 from requests.models import Response
 
-from get_flakes.github import CheckSuite, PullRequest
+from get_flakes.github import CheckConclusionState, CheckSuite, PullRequest
 
 ENDPOINT = "https://api.github.com/graphql"
 TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.html.jinja"
@@ -24,7 +24,7 @@ token = os.environ["GITHUB_TOKEN"]
 
 
 class FlakyRun(BaseModel):
-    conclusion: str
+    conclusion: Optional[CheckConclusionState]
     url: str
 
 
@@ -99,10 +99,13 @@ class Reporter:
                 flaky_checks: List[FlakyCheck] = []
 
                 for suite in cc.commit.checkSuites.nodes:
-                    conclusions_lookup: Dict[str, Set[str]] = DefaultDict(set)
+                    conclusions_lookup: Dict[
+                        str, Set[CheckConclusionState]
+                    ] = DefaultDict(set)
 
                     for run in suite.checkRuns.nodes:
-                        conclusions_lookup[run.name].add(run.conclusion)
+                        if run.conclusion:
+                            conclusions_lookup[run.name].add(run.conclusion)
 
                     for check_run_name, conclusions in conclusions_lookup.items():
                         is_flaky = len(conclusions) > 1

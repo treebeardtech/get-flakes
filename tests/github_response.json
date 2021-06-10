@@ -57,7 +57,7 @@
                                 },
                                 {
                                   "databaseId": 2087176326,
-                                  "conclusion": "SUCCESS",
+                                  "conclusion": null,
                                   "name": "pytest (macos-latest, 3.6)"
                                 },
                                 {

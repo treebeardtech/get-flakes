@@ -1,6 +1,19 @@
-from typing import List
+from enum import Enum
+from typing import List, Optional
 
 from pydantic import BaseModel
+
+
+class CheckConclusionState(str, Enum):
+    ACTION_REQUIRED = "ACTION_REQUIRED"
+    TIMED_OUT = "TIMED_OUT"
+    CANCELLED = "CANCELLED"
+    FAILURE = "FAILURE"
+    SUCCESS = "SUCCESS"
+    NEUTRAL = "NEUTRAL"
+    SKIPPED = "SKIPPED"
+    STARTUP_FAILURE = "STARTUP_FAILURE"
+    STALE = "STALE"
 
 
 class App(BaseModel):
@@ -9,7 +22,7 @@ class App(BaseModel):
 
 class CheckRun(BaseModel):
     databaseId: str
-    conclusion: str
+    conclusion: Optional[CheckConclusionState]
     name: str
 
 
