@@ -6,11 +6,11 @@ from typing import Any, DefaultDict, Dict, List, Set
 
 import click
 import dotenv
-from pydantic.main import BaseModel
 import requests
 from click.core import Context
 from jinja2 import Environment, select_autoescape
 from jinja2.loaders import DictLoader
+from pydantic.main import BaseModel
 from requests.models import Response
 
 from get_flakes.github import CheckSuite, PullRequest
@@ -22,13 +22,16 @@ QUERIES_DIR = Path(__file__).parent / "queries"
 dotenv.load_dotenv()
 token = os.environ["GITHUB_TOKEN"]
 
+
 class FlakyRun(BaseModel):
     conclusion: str
     url: str
 
+
 class FlakyCheck(BaseModel):
     name: str
     runs: List[FlakyRun]
+
 
 class FlakyCommit(BaseModel):
     checks: List[FlakyCheck]
@@ -77,12 +80,13 @@ def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
     assert resp.status_code == 200
     return resp.json()
 
+
 class Reporter:
     def get_flaky_check(self, name: str, suite: CheckSuite):
         runs: List[FlakyRun] = []
         for run in suite.checkRuns.nodes:
             if run.name == name:
-                runs.append(FlakyRun(conclusion=run.conclusion))
+                runs.append(FlakyRun(conclusion=run.conclusion, url="lkj"))
         return FlakyCheck(name=name, runs=runs)
 
     def get_flaky_prs(self, prs: List[PullRequest]):
@@ -94,8 +98,8 @@ class Reporter:
             for cc in pr.commits.nodes:
                 flaky_checks: List[FlakyCheck] = []
 
-                for suite in cc.checkSuites.nodes:
-                    conclusions_lookup: Dict[str, Set[str]] = DefaultDict(Set)
+                for suite in cc.commit.checkSuites.nodes:
+                    conclusions_lookup: Dict[str, Set[str]] = DefaultDict(set)
 
                     for run in suite.checkRuns.nodes:
                         conclusions_lookup[run.name].add(run.conclusion)
@@ -104,14 +108,18 @@ class Reporter:
                         is_flaky = len(conclusions) > 1
 
                         if is_flaky:
-                            flaky_checks.append(self.get_flaky_check(check_run_name, suite))
+                            flaky_checks.append(
+                                self.get_flaky_check(check_run_name, suite)
+                            )
 
                 if len(flaky_checks) > 0:
-                    flaky_commit = FlakyCommit(checks=flaky_checks)
+                    flaky_commit = FlakyCommit(
+                        checks=flaky_checks, sha="98", message="lkj"
+                    )
                     flaky_commits.append(flaky_commit)
 
             if len(flaky_commits) > 0:
-                flaky_pr = FlakyPR(commits=flaky_commits)
+                flaky_pr = FlakyPR(commits=flaky_commits, number=4)
                 flaky_prs.append(flaky_pr)
 
         return flaky_prs
@@ -137,7 +145,9 @@ def run(ctx: Context, debug: bool, days: int):
     repo = "treebeardtech/get-flakes"
 
     api_response: Dict[str, Any] = get_api_response(token, repo, days)
-    prs: List[PullRequest] = [get_check_runs(api_response)
+    raw_prs = api_response["data"]["repository"]["pullRequests"]["nodes"]
+    prs = [PullRequest(**pr) for pr in raw_prs]
+    prs: List[PullRequest] = []
     flaky_prs: List[FlakyPR] = Reporter().get_flaky_prs(prs)
     output: str = render_report(flaky_prs)
     click.echo(output)
