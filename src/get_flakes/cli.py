@@ -2,7 +2,7 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, DefaultDict, Dict, List, Optional, Set
 
 import click
 import dotenv
@@ -10,7 +10,10 @@ import requests
 from click.core import Context
 from jinja2 import Environment, select_autoescape
 from jinja2.loaders import DictLoader
+from pydantic.main import BaseModel
 from requests.models import Response
+
+from get_flakes.github import CheckConclusionState, CheckSuite, PullRequest
 
 ENDPOINT = "https://api.github.com/graphql"
 TEMPLATE_PATH = Path(__file__).parent / "templates" / "report.html.jinja"
@@ -20,25 +23,30 @@ dotenv.load_dotenv()
 token = os.environ["GITHUB_TOKEN"]
 
 
-@dataclass
-class CheckRun:
-    repo: str
+class FlakyRun(BaseModel):
+    conclusion: Optional[CheckConclusionState]
+    url: str
+
+
+class FlakyCheck(BaseModel):
+    name: str
+    runs: List[FlakyRun]
+
+
+class FlakyCommit(BaseModel):
+    checks: List[FlakyCheck]
     sha: str
-    pr_number: str
-    check_run_id: str
-    app: str
-    check_name: str
-    conclusion: str
+    message: str
 
 
-@dataclass
-class FlakeIncident:
-    check_runs: List[CheckRun]
+class FlakyPR(BaseModel):
+    commits: List[FlakyCommit]
+    number: int
 
 
 @dataclass
 class FlakeReport:
-    flake_incidents: List[FlakeIncident]
+    flake_incidents: List[PullRequest]
 
 
 def create_check_run(report_body: str):
@@ -73,20 +81,54 @@ def get_api_response(token: str, repo: str, days: int) -> Dict[str, Any]:
     return resp.json()
 
 
-def get_check_runs(data: Dict[str, Any]):
-    # url = f"https://github.com/{repo}/pull/{pr_number}/checks?check_run_id={check_run_id}"
-    return []
+class Reporter:
+    def get_flaky_check(self, name: str, suite: CheckSuite):
+        runs: List[FlakyRun] = []
+        for run in suite.checkRuns.nodes:
+            if run.name == name:
+                runs.append(FlakyRun(conclusion=run.conclusion, url="lkj"))
+        return FlakyCheck(name=name, runs=runs)
+
+    def get_flaky_prs(self, prs: List[PullRequest]):
+        flaky_prs: List[FlakyPR] = []
+
+        for pr in prs:
+            flaky_commits: List[FlakyCommit] = []
+
+            for cc in pr.commits.nodes:
+                flaky_checks: List[FlakyCheck] = []
+
+                for suite in cc.commit.checkSuites.nodes:
+                    conclusions_lookup: Dict[
+                        str, Set[CheckConclusionState]
+                    ] = DefaultDict(set)
+
+                    for run in suite.checkRuns.nodes:
+                        if run.conclusion:
+                            conclusions_lookup[run.name].add(run.conclusion)
+
+                    for check_run_name, conclusions in conclusions_lookup.items():
+                        is_flaky = len(conclusions) > 1
+
+                        if is_flaky:
+                            flaky_checks.append(
+                                self.get_flaky_check(check_run_name, suite)
+                            )
+
+                if len(flaky_checks) > 0:
+                    flaky_commit = FlakyCommit(
+                        checks=flaky_checks, sha="98", message="lkj"
+                    )
+                    flaky_commits.append(flaky_commit)
+
+            if len(flaky_commits) > 0:
+                flaky_pr = FlakyPR(commits=flaky_commits, number=4)
+                flaky_prs.append(flaky_pr)
+
+        return flaky_prs
 
 
-def get_flake_incidents(check_runs: List[CheckRun]):
-    return []
-
-
-def get_flake_report(flake_incidents: List[FlakeIncident]):
-    return FlakeReport(flake_incidents=[])
-
-
-def render_report(report: FlakeReport) -> str:
+def render_report(flaky_prs: List[FlakyPR]) -> str:
     env = Environment(
         loader=DictLoader({"report": (TEMPLATE_PATH).read_text()}),
         autoescape=select_autoescape(),
@@ -106,8 +148,9 @@ def run(ctx: Context, debug: bool, days: int):
     repo = "treebeardtech/get-flakes"
 
     api_response: Dict[str, Any] = get_api_response(token, repo, days)
-    check_runs: List[CheckRun] = get_check_runs(api_response)
-    flake_incidents: List[FlakeIncident] = get_flake_incidents(check_runs)
-    flake_report: FlakeReport = get_flake_report(flake_incidents)
-    output: str = render_report(flake_report)
+    raw_prs = api_response["data"]["repository"]["pullRequests"]["nodes"]
+    prs = [PullRequest(**pr) for pr in raw_prs]
+    prs: List[PullRequest] = []
+    flaky_prs: List[FlakyPR] = Reporter().get_flaky_prs(prs)
+    output: str = render_report(flaky_prs)
     click.echo(output)

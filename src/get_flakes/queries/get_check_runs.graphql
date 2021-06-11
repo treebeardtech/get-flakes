@@ -9,11 +9,17 @@ query {
     nameWithOwner
     pullRequests(last: 100) {
       nodes {
+        title
+        author {
+          login
+        }
         number
         commits(last: 10) {
           nodes {
             commit {
-              checkSuites(last:10) {
+              oid
+              message
+              checkSuites(last: 10) {
                 nodes {
                   app {
                     name
